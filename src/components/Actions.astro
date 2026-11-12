@@ -1,12 +1,14 @@
 ---
 interface Props {
+  /** Centers the actions in the row instead of starting them at its edge. */
+  centered?: boolean;
   class?: string;
 }
 
-const { class: className } = Astro.props;
+const { centered = false, class: className } = Astro.props;
 ---
 
-<div class:list={['actions', className]}><slot /></div>
+<div class:list={['actions', { centered }, className]}><slot /></div>
 
 <style lang="scss">
   .actions {
@@ -14,5 +16,9 @@ const { class: className } = Astro.props;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-3);
+  }
+
+  .centered {
+    justify-content: center;
   }
 </style>

@@ -36,11 +36,5 @@ ${firstCompetitor} charges per seat; ${listOf(otherCompetitors)} charge per usag
 </background-results dlv_01a1c6dc-...>`,
   },
   laravelInstall: { lang: 'bash', code: `composer require ${FRAMEWORKS.laravel.package}` },
-  laravelServe: {
-    lang: 'php',
-    code: String.raw`$agent = app(SupportAgent::class)->for($conversation->id);
-
-$agent->chat(new UserMessage($request->input('message')));`,
-  },
   symfonyInstall: { lang: 'bash', code: `composer require ${FRAMEWORKS.symfony.package}` },
 } satisfies Record<string, Snippet>;
