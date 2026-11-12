@@ -66,9 +66,3 @@ export const BACKGROUND_KINDS = [
     use: '`bash`, builds, test suites: tools that are fast or slow depending on the call',
   },
 ];
-
-export const WIRING_PARTS = [
-  'The **`Background` object** holds what your whole application shares: the storage, the way to start other processes, and the way to build your agent for a conversation.',
-  '**Your agent declares its background tools** next to its other tools, through `toolkit()`. Two agents can have different background tools.',
-  '**A scheduler runs the sweep** every minute, to recover from crashes.',
-];

@@ -18,6 +18,5 @@ export const NAV = [
   { label: 'How it works', href: '#how-it-works' },
   { label: 'Features', href: '#features' },
   { label: 'Production', href: '#production' },
-  { label: 'Get started', href: '#get-started' },
   { label: 'FAQ', href: '#faq' },
 ];

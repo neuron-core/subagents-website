@@ -16,9 +16,9 @@ const { laravel, symfony } = FRAMEWORKS;
 
 <Section id="frameworks" heading={`Ready for ${listOf(FRAMEWORK_NAMES)}`}>
   <Fragment slot="lead">
-    Dedicated integration packages wire everything into your framework: no bootstrap file, no process runner to configure, no
-    crontab line to remember. They build on {PRODUCT_NAME}, so your project needs a license for it, and they install the same
-    way once it has access.
+    Dedicated integration packages wire everything into your framework: tasks run on its queue, and the sweep that recovers
+    lost work runs on its scheduler. They build on {PRODUCT_NAME}, so your project needs a license for it, and you install them
+    with Composer once it has access.
   </Fragment>
   <Grid columns={2}>
     <Stack>
