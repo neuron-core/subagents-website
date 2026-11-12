@@ -35,29 +35,6 @@ ${firstCompetitor} charges per seat; ${listOf(otherCompetitors)} charge per usag
 </task dlv_01a1c6dc-...>
 </background-results dlv_01a1c6dc-...>`,
   },
-  ledger: {
-    lang: 'php',
-    code: String.raw`use NeuronAI\Subagents\Ledger\Ledgers;
-
-$tasks = (new Ledgers($persistence))->of($threadId)->tasks();
-
-foreach ($tasks as $task) {
-    $task->id;            // "sub_01a1c6da-..."
-    $task->tool;          // "researcher"
-    $task->inputs;        // ['prompt' => 'Research ${firstCompetitor} pricing...']
-    $task->status;        // TaskStatus::Pending, Completed or Failed
-    $task->attempts;      // 0 while queued, 1 or more once a worker started it
-    $task->stopRequested; // true after the model asked to stop it
-}`,
-  },
-  history: {
-    lang: 'php',
-    code: String.raw`foreach ($agent->getChatHistory()->getMessages() as $message) {
-    if ($message->getMetadata('background') !== null) {
-        // A delivered result: show it as a notice, or hide it
-    }
-}`,
-  },
   laravelInstall: { lang: 'bash', code: `composer require ${FRAMEWORKS.laravel.package}` },
   laravelServe: {
     lang: 'php',

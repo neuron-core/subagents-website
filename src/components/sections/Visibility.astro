@@ -1,8 +1,6 @@
 ---
 import { MANAGEMENT_TOOLS, TASK_CHIP_STATUSES, TASK_STATUSES } from '../../consts/product';
-import { SNIPPETS } from '../../consts/snippets';
 import { numberWord, oneOfParts } from '../../lib/format';
-import CodeCard from '../CodeCard.astro';
 import TrayDemo from '../demos/TrayDemo.astro';
 import Grid from '../Grid.astro';
 import Section from '../Section.astro';
@@ -26,10 +24,6 @@ import Stack from '../Stack.astro';
   </p>
   <TrayDemo slot="aside" />
   <Fragment slot="after">
-    <Grid columns={2}>
-      <CodeCard title="Tasks in progress" snippet={SNIPPETS.ledger} />
-      <CodeCard title="Results already delivered" snippet={SNIPPETS.history} />
-    </Grid>
     <Grid columns={3}>
       <p class="t-body">
         <strong>The agent's answer, live.</strong> The answer to a result is written by a background process, not by the web
