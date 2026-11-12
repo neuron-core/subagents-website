@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" shape-rendering="crispEdges" role="img" aria-labelledby="title">
+  <title id="title">Neuron IQ pixel mark, for dark backgrounds</title>
+  <!-- 6 x 6 squares, 45 units each with a 6 unit gap. Transparent background.
+       Colors as in the dark sections: bg-weak, bg-soft, light ink, iq-green. -->
+  <g fill="#1c1c1c">
+    <rect x="0" y="0" width="45" height="45"/>
+    <rect x="51" y="0" width="45" height="45"/>
+    <rect x="102" y="0" width="45" height="45"/>
+    <rect x="153" y="0" width="45" height="45"/>
+    <rect x="204" y="0" width="45" height="45"/>
+    <rect x="0" y="51" width="45" height="45"/>
+    <rect x="51" y="51" width="45" height="45"/>
+    <rect x="102" y="51" width="45" height="45"/>
+    <rect x="153" y="51" width="45" height="45"/>
+    <rect x="0" y="102" width="45" height="45"/>
+    <rect x="51" y="102" width="45" height="45"/>
+    <rect x="102" y="102" width="45" height="45"/>
+    <rect x="255" y="102" width="45" height="45"/>
+    <rect x="0" y="153" width="45" height="45"/>
+    <rect x="51" y="153" width="45" height="45"/>
+    <rect x="204" y="153" width="45" height="45"/>
+    <rect x="255" y="153" width="45" height="45"/>
+    <rect x="0" y="204" width="45" height="45"/>
+    <rect x="153" y="204" width="45" height="45"/>
+    <rect x="204" y="204" width="45" height="45"/>
+    <rect x="255" y="204" width="45" height="45"/>
+    <rect x="102" y="255" width="45" height="45"/>
+    <rect x="153" y="255" width="45" height="45"/>
+    <rect x="204" y="255" width="45" height="45"/>
+    <rect x="255" y="255" width="45" height="45"/>
+  </g>
+  <g fill="#262626">
+    <rect x="255" y="51" width="45" height="45"/>
+    <rect x="204" y="102" width="45" height="45"/>
+    <rect x="153" y="153" width="45" height="45"/>
+    <rect x="102" y="204" width="45" height="45"/>
+    <rect x="51" y="255" width="45" height="45"/>
+  </g>
+  <g fill="#f7f7f7">
+    <rect x="204" y="51" width="45" height="45"/>
+    <rect x="153" y="102" width="45" height="45"/>
+    <rect x="102" y="153" width="45" height="45"/>
+    <rect x="51" y="204" width="45" height="45"/>
+    <rect x="0" y="255" width="45" height="45"/>
+  </g>
+  <g fill="#00a651">
+    <rect x="255" y="0" width="45" height="45"/>
+  </g>
+</svg>

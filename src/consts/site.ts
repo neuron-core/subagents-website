@@ -1,7 +1,10 @@
-import { BRAND, PRODUCT_NAME } from './product';
+import { BRAND, PRODUCT } from './product';
+
+/** The brand the site is published under, in the logo and the page title. The copy still talks about Neuron AI. */
+export const SITE_BRAND = 'Neuron IQ';
 
 export const SITE = {
-  title: `${PRODUCT_NAME}: background tools and sub-agents for ${BRAND}`,
+  title: `${SITE_BRAND} ${PRODUCT}`,
   description: `Give any ${BRAND} agent background tools and sub-agents. It hands slow work to other processes, runs it side by side, and keeps talking with your user.`,
 };
 

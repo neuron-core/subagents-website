@@ -2,13 +2,15 @@
 interface Props {
   /** On wide screens, the aside starts lower than the main column. */
   offset?: boolean;
+  /** On wide screens, the two columns are centered on each other vertically. */
+  centered?: boolean;
   class?: string;
 }
 
-const { offset = false, class: className } = Astro.props;
+const { offset = false, centered = false, class: className } = Astro.props;
 ---
 
-<div class:list={['split', { offset }, className]}>
+<div class:list={['split', { offset, centered }, className]}>
   <div class="main"><slot /></div>
   <div class="aside"><slot name="aside" /></div>
 </div>
@@ -33,6 +35,10 @@ const { offset = false, class: className } = Astro.props;
     flex-direction: column;
     gap: var(--space-4);
     min-width: 0;
+  }
+
+  .split.centered {
+    align-items: center;
   }
 
   .offset > .aside {

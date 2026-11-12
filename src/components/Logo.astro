@@ -1,5 +1,8 @@
 ---
-import { BRAND, PRODUCT } from '../consts/product';
+// The header and footer both use the dark theme, so the logo uses the mark drawn for dark backgrounds.
+import mark from '../assets/neuron-iq-logo-dark.svg';
+import { PRODUCT } from '../consts/product';
+import { SITE_BRAND } from '../consts/site';
 
 interface Props {
   size?: 'sm' | 'md';
@@ -10,14 +13,9 @@ const { size = 'md', class: className } = Astro.props;
 ---
 
 <span class:list={['logo', size, className]}>
-  <svg class="mark" viewBox="0 0 3 3" fill="currentColor" aria-hidden="true">
-    <rect x="2" y="0" width="1" height="1"></rect>
-    <rect x="1" y="1" width="1" height="1"></rect>
-    <rect x="0" y="2" width="1" height="1"></rect>
-    <rect x="2" y="2" width="1" height="1"></rect>
-  </svg>
+  <img class="mark" src={mark.src} alt="" />
   <span class="words">
-    <span class="brand">{BRAND}</span>
+    <span class="brand">{SITE_BRAND}</span>
     <span class="product">{PRODUCT}</span>
   </span>
 </span>
