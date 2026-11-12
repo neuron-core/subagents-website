@@ -1,0 +1,38 @@
+---
+import { chatState } from '../../lib/demos/chat';
+import { CHAT_SCRIPTS } from '../../lib/demos/scripts';
+import ChatPanel from './ChatPanel.astro';
+
+interface Props {
+  /** One of the plain chat demos. */
+  name: keyof typeof CHAT_SCRIPTS;
+  agent: string;
+  thread: string;
+  height: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+}
+
+const { name, agent, thread, height, class: className } = Astro.props;
+const script = CHAT_SCRIPTS[name];
+---
+
+<ChatPanel
+  demo={name}
+  agent={agent}
+  thread={thread}
+  height={height}
+  state={chatState(script, script.length - 1)}
+  chips
+  class={className}
+/>
+
+<script>
+  import { chatState } from '../../lib/demos/chat';
+  import { CHAT_SCRIPTS } from '../../lib/demos/scripts';
+  import { patchChat, runDemo } from '../../scripts/demo';
+
+  for (const [name, script] of Object.entries(CHAT_SCRIPTS)) {
+    const root = document.querySelector<HTMLElement>(`[data-demo="${name}"]`);
+    if (root) runDemo(root, script.length, (t) => patchChat(root, chatState(script, t)));
+  }
+</script>

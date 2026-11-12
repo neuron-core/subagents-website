@@ -1,0 +1,65 @@
+---
+import { MANAGEMENT_TOOLS, TASK_CHIP_STATUSES, TASK_STATUSES } from '../../consts/product';
+import { SNIPPETS } from '../../consts/snippets';
+import { numberWord, oneOfParts } from '../../lib/format';
+import CodeCard from '../CodeCard.astro';
+import TrayDemo from '../demos/TrayDemo.astro';
+import Grid from '../Grid.astro';
+import Section from '../Section.astro';
+import Stack from '../Stack.astro';
+---
+
+<Section id="visibility" heading="Show your users what's happening">
+  <Fragment slot="lead">
+    Background work only feels good when people can see it. Everything the package knows about a conversation's tasks is
+    stored in your own database, and your application can read it to build the experience you want.
+  </Fragment>
+  <p class="t-body">
+    <strong>Tasks in progress.</strong> For each open task you can read its tool, its arguments, its status ({
+      oneOfParts(TASK_STATUSES).map((part) => (part.type === 'element' ? <code class="ic">{part.value}</code> : part.value))
+    }), how many attempts it took, whether a stop was asked, and its result or error.
+  </p>
+  <p class="t-body">
+    <strong>Results already delivered.</strong> Once a result reaches the conversation, it lives in the chat history as a
+    message carrying <code class="ic">background</code> metadata, with the delivery ID and the IDs of its tasks. Your chat
+    page can show it as a system notice instead of as something your user wrote.
+  </p>
+  <TrayDemo slot="aside" />
+  <Fragment slot="after">
+    <Grid columns={2}>
+      <CodeCard title="Tasks in progress" snippet={SNIPPETS.ledger} />
+      <CodeCard title="Results already delivered" snippet={SNIPPETS.history} />
+    </Grid>
+    <Grid columns={3}>
+      <p class="t-body">
+        <strong>The agent's answer, live.</strong> The answer to a result is written by a background process, not by the web
+        request your user is waiting on. Reload the conversation to show it, or turn on <code class="ic">stream: true</code> to
+        stream that turn through the agent's streaming channel, straight to your front end.
+      </p>
+      <p class="t-body">
+        <strong>The model can check too.</strong> Next to the background tools, the agent gets {
+          numberWord(Object.keys(MANAGEMENT_TOOLS).length)
+        } more: <code class="ic">{MANAGEMENT_TOOLS.check}</code>, to tell the user how a task is doing when they ask, and
+        <code class="ic">{MANAGEMENT_TOOLS.stop}</code>, to cancel a task that is no longer needed.
+      </p>
+      <Stack>
+        <p class="t-body"><strong>With this you can build:</strong></p>
+        <ul class="bullets t-body">
+          <li>a “3 tasks running” tray above the chat input,</li>
+          <li>a status chip for each task: {TASK_CHIP_STATUSES.join(', ')},</li>
+          <li>a timeline that shows where each result entered the conversation,</li>
+          <li>notifications when a long job finishes while the user is on another page.</li>
+        </ul>
+      </Stack>
+    </Grid>
+  </Fragment>
+</Section>
+
+<style lang="scss">
+  .bullets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    padding-left: var(--space-5);
+  }
+</style>

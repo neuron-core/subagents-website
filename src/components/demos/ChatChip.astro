@@ -1,0 +1,80 @@
+---
+import type { Chip } from '../../lib/demos/chat';
+import Icon from '../Icon.astro';
+import Spinner from '../Spinner.astro';
+
+interface Props {
+  chip: Chip;
+}
+
+const { chip } = Astro.props;
+---
+
+<span class="chip" data-kind="chip" data-state={chip.done ? 'done' : 'running'}>
+  <Spinner class="running-icon" />
+  <Icon name="check" size="sm" class="done-icon" />
+  <span class="tool" data-text="tool">{chip.tool}</span>
+  <span data-text="label">{chip.label}</span>
+  <span class="meta" data-text="meta">{chip.meta}</span>
+</span>
+
+<style lang="scss">
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--size-chip);
+    padding-inline: var(--space-2-5);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-tight);
+    font-variant-ligatures: none;
+    transition: background-color var(--duration-slow) var(--ease);
+    animation: chip-in var(--duration-enter) var(--ease) both;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .tool {
+    color: var(--color-accent-text);
+  }
+
+  .meta {
+    color: var(--color-text-muted);
+  }
+
+  [data-state='done'] {
+    background: var(--color-ok);
+
+    &,
+    .tool,
+    .meta {
+      color: var(--color-on-status);
+    }
+
+    .running-icon {
+      display: none;
+    }
+  }
+
+  [data-state='running'] .done-icon {
+    display: none;
+  }
+
+  @keyframes chip-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--space-1-5));
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+import { MANAGEMENT_TOOLS, SUBAGENT_MAX_ATTEMPTS } from '../../consts/product';
+import { numberWord } from '../../lib/format';
+import Section from '../Section.astro';
+---
+
+<Section id="production" heading="Built for production, not just for the demo" bordered>
+  <Fragment slot="lead">
+    Background work is where the hard problems live: processes die, jobs get delivered twice, two workers grab the same task.
+    The package handles them so you don't have to.
+  </Fragment>
+  <ul class="facts">
+    <li class="t-body">
+      <strong>Nothing is lost when a process dies.</strong> A scheduled <em>sweep</em> runs every minute and starts again any
+      work whose process disappeared. It executes nothing itself, it only rings the bell again.
+    </li>
+    <li class="t-body">
+      <strong>Sub-agents resume where they stopped.</strong> A sub-agent whose process crashed is picked up by another one and
+      continues its own conversation, up to {numberWord(SUBAGENT_MAX_ATTEMPTS)} attempts.
+    </li>
+    <li class="t-body">
+      <strong>A tool call never runs twice.</strong> If a background tool call crashes halfway, the package can't know whether it
+      already took effect (did the email go out?), so it reports the task as failed instead of running it again.
+    </li>
+    <li class="t-body">
+      <strong>Duplicates are harmless.</strong> A signal delivered twice, late, or to two workers at once changes nothing: only
+      one of them does the work, and the result is reported once.
+    </li>
+    <li class="t-body">
+      <strong>Approval happens before the work starts.</strong> A tool that needs a human's approval asks for it in the
+      conversation, before the task is created, never in a process nobody is watching.
+    </li>
+    <li class="t-body">
+      <strong>Stop when you want.</strong> <code class="ic">{MANAGEMENT_TOOLS.stop}</code> ends a task at its next step, and a
+      stopped task reports nothing.
+    </li>
+    <li class="t-body">
+      <strong>Each conversation sees only its own tasks.</strong> The toolkit works for the conversation your application bound
+      the agent to: the model can never look at, or stop, another conversation's tasks.
+    </li>
+    <li class="t-body">
+      <strong>No new tables.</strong> Everything is kept in the stores your agents already use: Neuron's workflow persistence and
+      message store, on a database or Redis.
+    </li>
+    <li class="t-body">
+      <strong>Your infrastructure, your choice.</strong> Start tasks as local PHP processes with zero setup, or send them to any
+      job queue by implementing one method.
+    </li>
+    <li class="t-body">
+      <strong>Easy to test.</strong> <code class="ic">FakeRunner</code> keeps the work in memory and runs it when your test says
+      so, so you can test the full round trip, from the tool call to the agent's answer, in one PHPUnit test.
+    </li>
+  </ul>
+</Section>
+
+<style lang="scss">
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min-list), 100%), 1fr));
+    gap: 0 var(--space-12);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      padding-block: var(--space-5);
+      border-top: var(--border-width) solid var(--color-line);
+    }
+  }
+</style>

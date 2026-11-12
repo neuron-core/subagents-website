@@ -1,0 +1,17 @@
+---
+import { BRAND, PRODUCT_NAME } from '../../consts/product';
+import { LINKS } from '../../consts/site';
+import Button from '../Button.astro';
+import PageHero from '../PageHero.astro';
+---
+
+<PageHero id="talk-to-us" variant="closing" heading="Stop making your users wait for your agent.">
+  <Fragment slot="lead">
+    Tell us about your agents, your stack and the work you want them to take on. We'll help you plan it, and set you up with
+    the license that fits your team.
+  </Fragment>
+  <Button href={LINKS.contact} size="lg">Talk to us</Button>
+  <Fragment slot="note">
+    {BRAND} is open source. {PRODUCT_NAME} is an advanced extension available under a commercial license.
+  </Fragment>
+</PageHero>

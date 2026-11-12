@@ -1,0 +1,59 @@
+---
+import { BRAND, FRAMEWORK_NAMES, PHP_MIN_VERSION, PRODUCT_NAME, WIRING_PARTS } from '../../consts/product';
+import { LINKS } from '../../consts/site';
+import { SNIPPETS } from '../../consts/snippets';
+import { capitalize, inline, listOf, numberWord } from '../../lib/format';
+import Actions from '../Actions.astro';
+import Button from '../Button.astro';
+import CodeCard from '../CodeCard.astro';
+import Row from '../Row.astro';
+import RuleList from '../RuleList.astro';
+import Section from '../Section.astro';
+import Stack from '../Stack.astro';
+---
+
+<Section id="get-started" heading="Getting started">
+  <div>
+    <Row>
+      <h3 slot="label" class="t-title">1. Get your license</h3>
+      <p class="t-body measure">
+        {PRODUCT_NAME} is an advanced extension of {BRAND}, released under a commercial license.
+        <a href={LINKS.contact}>Talk to us</a> to get yours: it gives your team access to the package, with the details to add
+        it to your projects through Composer.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-title">2. Install the package</h3>
+      <Stack>
+        <p class="t-body">Once your project has access, install it like any other Composer package:</p>
+        <CodeCard title="Terminal" snippet={SNIPPETS.install} />
+        <p class="t-body">
+          It requires PHP {PHP_MIN_VERSION} or later and an application that already uses
+          <a href={LINKS.neuronGithub}>{BRAND}</a>.
+        </p>
+      </Stack>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-title">3. Wire it in</h3>
+      <Stack>
+        <p class="t-body">
+          {capitalize(numberWord(WIRING_PARTS.length))} parts, all built the same way in every process of your application.
+        </p>
+        <RuleList>
+          {WIRING_PARTS.map((part) => <li set:html={inline(part)} />)}
+        </RuleList>
+        <CodeCard title="background.php" snippet={SNIPPETS.bootstrap} />
+        <CodeCard title="SupportAgent.php" snippet={SNIPPETS.agent} />
+        <CodeCard title="PHP" snippet={SNIPPETS.serve} />
+        <CodeCard title="crontab" snippet={SNIPPETS.cron} />
+        <p class="t-body">
+          That's the whole setup for a plain PHP application. On {listOf(FRAMEWORK_NAMES)}, the integration packages do it for
+          you.
+        </p>
+        <Actions>
+          <Button href={LINKS.contact}>Talk to us</Button>
+        </Actions>
+      </Stack>
+    </Row>
+  </div>
+</Section>

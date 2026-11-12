@@ -1,0 +1,62 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { TaskChipStatus } from '../../consts/product';
+import Spinner from '../Spinner.astro';
+
+type Props = HTMLAttributes<'span'> & {
+  status: TaskChipStatus;
+};
+
+const { status, class: className, ...rest } = Astro.props;
+---
+
+{/* A task status. The spinner shows while the status is `running`. */}
+<span class:list={['pill', className]} data-status={status} {...rest}>
+  <Spinner size="sm" class="spinner" />
+  <span data-text="pill"><slot /></span>
+</span>
+
+<style lang="scss">
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    flex: none;
+    min-height: var(--size-pill);
+    padding-inline: var(--space-2);
+    border: var(--border-width) solid transparent;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+  }
+
+  .pill:not([data-status='running']) .spinner {
+    display: none;
+  }
+
+  [data-status='queued'] {
+    color: var(--color-text-muted);
+    border-color: var(--color-line-strong);
+  }
+
+  [data-status='running'] {
+    background: var(--color-surface-sunken);
+    color: var(--color-text);
+  }
+
+  [data-status='stopping'] {
+    background: var(--color-warn);
+    color: var(--color-on-warn);
+  }
+
+  [data-status='done'] {
+    background: var(--color-ok);
+    color: var(--color-on-status);
+  }
+
+  [data-status='failed'] {
+    background: var(--color-fail);
+    color: var(--color-on-status);
+  }
+</style>

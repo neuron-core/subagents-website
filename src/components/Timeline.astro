@@ -1,0 +1,177 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { percent, type TimelineRow } from '../lib/timeline';
+
+type Props = HTMLAttributes<'div'> & {
+  total: number;
+  /** Minutes between two ticks of the scale. */
+  step: number;
+  rows: TimelineRow[];
+};
+
+const { total, step, rows, class: className, ...rest } = Astro.props;
+const ticks = Array.from({ length: Math.ceil(total / step) }, (_, i) => i * step);
+---
+
+{/*
+  A minute-by-minute chart. The optional `head` slot fills a row above the scale (a label and a status),
+  the optional `note` slot fills the track of a row below the bars.
+*/}
+<div class:list={['timeline', className]} {...rest}>
+  {
+    Astro.slots.has('head') && (
+      <div class="row">
+        <slot name="head" />
+      </div>
+    )
+  }
+  <div class="row scale" aria-hidden="true">
+    <span class="t-caption muted">Minutes</span>
+    <span class="track">
+      {
+        ticks.map((minute) => (
+          <span class="tick" style={`--left: ${percent(minute, total)}`}>
+            {minute}
+          </span>
+        ))
+      }
+    </span>
+  </div>
+  {
+    rows.map((row) => (
+      <div class:list={['row', { highlight: row.highlight }]} data-row>
+        <span class:list={['label', { mono: row.mono }]}>{row.label}</span>
+        <span class="track">
+          <span class="wash" data-if="wash" hidden={!row.wash} />
+          <span class="bar" data-bar style={`--left: ${row.left}; --width: ${row.width}`}>
+            <span class="bar-text" data-text="bar">
+              {row.text}
+            </span>
+          </span>
+        </span>
+      </div>
+    ))
+  }
+  {
+    Astro.slots.has('note') && (
+      <div class="row">
+        <span />
+        <span class="track">
+          <slot name="note" />
+        </span>
+      </div>
+    )
+  }
+</div>
+
+<style lang="scss">
+  @use 'variables/breakpoints' as *;
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--space-3);
+    align-items: center;
+    min-height: var(--size-timeline-row);
+
+    @include md {
+      column-gap: var(--space-6);
+    }
+  }
+
+  .highlight {
+    margin: var(--space-1) calc(var(--space-2) * -1) 0;
+    padding-inline: var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-wash);
+  }
+
+  .label {
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-snug);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+  }
+
+  .highlight .label {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .track {
+    position: relative;
+    display: block;
+    height: var(--size-timeline-row);
+  }
+
+  .scale {
+    min-height: var(--size-timeline-scale);
+
+    .track {
+      height: var(--size-timeline-scale);
+    }
+  }
+
+  .tick {
+    position: absolute;
+    inset-block: 0;
+    left: var(--left);
+    padding-left: var(--space-1);
+    border-left: var(--border-width) solid var(--color-line);
+    font-size: var(--font-size-2xs);
+    line-height: var(--size-timeline-scale);
+    color: var(--color-text-muted);
+  }
+
+  .bar {
+    position: absolute;
+    top: calc((var(--size-timeline-row) - var(--size-bar)) / 2);
+    left: var(--left);
+    width: var(--width);
+    height: var(--size-bar);
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--color-segment);
+    transition: width var(--duration-bar) linear;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  .highlight .bar {
+    background: var(--color-orange);
+  }
+
+  .bar-text {
+    display: block;
+    padding-inline: var(--space-1-5);
+    font-size: var(--font-size-2xs);
+    line-height: var(--size-bar);
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  .highlight .bar-text {
+    color: var(--color-on-orange);
+  }
+
+  // The time saved, drawn behind the bars. Its start comes from `--wash-left` on a parent.
+  .wash {
+    position: absolute;
+    inset-block: 0;
+    left: var(--wash-left);
+    right: 0;
+    background: var(--color-accent-wash);
+  }
+</style>

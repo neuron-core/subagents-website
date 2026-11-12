@@ -1,0 +1,73 @@
+---
+import { BRAND, PRODUCT } from '../consts/product';
+
+interface Props {
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const { size = 'md', class: className } = Astro.props;
+---
+
+<span class:list={['logo', size, className]}>
+  <svg class="mark" viewBox="0 0 3 3" fill="currentColor" aria-hidden="true">
+    <rect x="2" y="0" width="1" height="1"></rect>
+    <rect x="1" y="1" width="1" height="1"></rect>
+    <rect x="0" y="2" width="1" height="1"></rect>
+    <rect x="2" y="2" width="1" height="1"></rect>
+  </svg>
+  <span class="words">
+    <span class="brand">{BRAND}</span>
+    <span class="product">{PRODUCT}</span>
+  </span>
+</span>
+
+<style lang="scss">
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .mark {
+    display: block;
+    flex: none;
+    width: var(--size-mark);
+    height: var(--size-mark);
+  }
+
+  .words {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .brand {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-title);
+  }
+
+  .product {
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
+  }
+
+  .logo.sm {
+    gap: var(--space-2-5);
+
+    .mark {
+      width: var(--size-mark-sm);
+      height: var(--size-mark-sm);
+    }
+
+    .brand {
+      font-size: var(--font-size-md);
+      letter-spacing: normal;
+    }
+
+    .product {
+      font-size: var(--font-size-sm);
+    }
+  }
+</style>

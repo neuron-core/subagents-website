@@ -1,0 +1,247 @@
+---
+import { flowScript, flowState } from '../../lib/demos/flow';
+import Icon from '../Icon.astro';
+import ChatPanel from './ChatPanel.astro';
+
+const state = flowState(flowScript.length - 1);
+---
+
+<ChatPanel demo="flow" agent="Support agent" thread="SupportAgent · thread 7c41e2" height="sm" state={state}>
+  <div class="behind" slot="footer">
+    <div class="behind-head">
+      <span class="label">Behind the scenes</span>
+      <span class="buzz" data-if="buzz" hidden={!state.buzz}>
+        <Icon name="bell" size="sm" class="bell" />
+        <span>The result is back</span>
+      </span>
+    </div>
+    <div class="lanes">
+      {
+        state.lanes.map((lane) => (
+          <div class:list={['lane', { hot: lane.hot }]} data-lane>
+            <span class="lane-name">
+              <span class="lane-label">{lane.label}</span>
+              <span class="lane-sub">{lane.sub}</span>
+            </span>
+            <span class="lane-track">
+              <span class="lane-bar" data-bar style={`--left: ${lane.left}; --width: ${lane.width}`}>
+                <span class="lane-text" data-text="lane">
+                  {lane.text}
+                </span>
+              </span>
+            </span>
+          </div>
+        ))
+      }
+    </div>
+    <div class="log" data-list="log">
+      {
+        state.log.map((line) => (
+          <span class="log-line" data-kind="line" data-text="line">
+            {line}
+          </span>
+        ))
+      }
+    </div>
+    <template data-template="line"><span class="log-line" data-kind="line" data-text="line"></span></template>
+  </div>
+</ChatPanel>
+
+<script>
+  import { flowState, stepTime, flowScript } from '../../lib/demos/flow';
+  import { patchChat, patchList, runDemo, setShown, setText } from '../../scripts/demo';
+
+  const root = document.querySelector<HTMLElement>('[data-demo="flow"]')!;
+  const steps = [...document.querySelectorAll<HTMLButtonElement>('[data-flow-step]')];
+  const lanes = [...root.querySelectorAll<HTMLElement>('[data-lane]')];
+  const log = root.querySelector('[data-list="log"]')!;
+
+  const demo = runDemo(root, flowScript.length, (t) => {
+    const state = flowState(t);
+    patchChat(root, state);
+    setShown(root, 'buzz', state.buzz);
+    state.lanes.forEach((lane, i) => {
+      lanes[i].querySelector<HTMLElement>('[data-bar]')!.style.setProperty('--width', lane.width);
+      setText(lanes[i], 'lane', lane.text);
+    });
+    patchList(root, log, state.log, () => 'line', (el, line) => (el.textContent = line));
+    steps.forEach((step, i) => step.setAttribute('aria-current', i === state.step ? 'step' : 'false'));
+  });
+
+  steps.forEach((step, i) => step.addEventListener('click', () => demo.jump(stepTime(i, demo.live))));
+</script>
+
+<style lang="scss">
+  .behind {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-top: var(--border-width) solid var(--color-line);
+  }
+
+  .behind-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--size-bar);
+  }
+
+  .label {
+    font-size: var(--font-size-2xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-compact);
+  }
+
+  .buzz {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-accent-text);
+  }
+
+  .bell {
+    transform-origin: 50% var(--space-0-5);
+    animation: ring var(--duration-ring) var(--ease);
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .lanes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .lane {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--space-4);
+    align-items: center;
+    min-height: var(--size-control);
+    padding-inline: var(--space-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .lane-name {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .lane-label {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+  }
+
+  .lane-sub {
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .lane-track {
+    position: relative;
+    display: block;
+    height: var(--size-bar);
+  }
+
+  .lane-bar {
+    position: absolute;
+    top: 0;
+    left: var(--left);
+    width: var(--width);
+    height: var(--size-bar);
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--color-segment);
+    transition: width var(--duration-bar) linear;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  .lane-text {
+    display: block;
+    padding-inline: var(--space-1-5);
+    font-size: var(--font-size-2xs);
+    line-height: var(--size-bar);
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  .hot {
+    background: var(--color-accent-wash);
+
+    .lane-bar {
+      background: var(--color-orange);
+    }
+
+    .lane-text {
+      color: var(--color-on-orange);
+    }
+  }
+
+  .log {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-0-5);
+    height: var(--log-height);
+    overflow: hidden;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-code);
+  }
+
+  .log-line {
+    overflow: hidden;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    &:last-child {
+      color: var(--color-text);
+    }
+  }
+
+  @keyframes ring {
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+
+    15% {
+      transform: rotate(16deg);
+    }
+
+    30% {
+      transform: rotate(-14deg);
+    }
+
+    45% {
+      transform: rotate(10deg);
+    }
+
+    60% {
+      transform: rotate(-7deg);
+    }
+
+    75% {
+      transform: rotate(3deg);
+    }
+  }
+</style>

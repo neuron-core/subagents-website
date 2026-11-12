@@ -1,0 +1,83 @@
+---
+import { flowScript, flowState } from '../../lib/demos/flow';
+import { inline } from '../../lib/format';
+
+interface Props {
+  /** One line per step of the flow demo, with `code` and **bold** marks. */
+  steps: string[];
+}
+
+const { steps } = Astro.props;
+const active = flowState(flowScript.length - 1).step;
+---
+
+{/* Each step jumps the flow demo to its moment; the flow demo's script wires them up. */}
+<ol class="steps">
+  {
+    steps.map((step, i) => (
+      <li>
+        <button type="button" class="step" data-flow-step={i} aria-current={i === active ? 'step' : 'false'}>
+          <span class="number">{i + 1}</span>
+          <span class="t-body" set:html={inline(step)} />
+        </button>
+      </li>
+    ))
+  }
+</ol>
+
+<style lang="scss">
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-inline: calc(var(--space-4) * -1);
+    padding: 0;
+    list-style: none;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease),
+      box-shadow var(--duration-fast) var(--ease);
+
+    &:hover {
+      box-shadow: inset 0 0 0 var(--border-width) var(--color-line);
+    }
+
+    &[aria-current='step'] {
+      background: var(--color-accent-wash);
+    }
+  }
+
+  .number {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-chip);
+    height: var(--size-chip);
+    border: var(--border-width) solid currentColor;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-none);
+    transition: color var(--duration-fast) var(--ease);
+
+    [aria-current='step'] > & {
+      color: var(--color-accent-text);
+    }
+  }
+</style>

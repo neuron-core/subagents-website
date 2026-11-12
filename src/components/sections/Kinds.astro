@@ -1,0 +1,36 @@
+---
+import { BACKGROUND_KINDS } from '../../consts/product';
+import { LINKS } from '../../consts/site';
+import { capitalize, inline, numberWord } from '../../lib/format';
+import DataTable from '../DataTable.astro';
+import Section from '../Section.astro';
+---
+
+<Section id="kinds" heading={`${capitalize(numberWord(BACKGROUND_KINDS.length))} kinds of background work`}>
+  <DataTable>
+    <thead>
+      <tr>
+        <th scope="col"><span class="sr-only">Kind</span></th>
+        <th scope="col">What the model sees</th>
+        <th scope="col">Runs in the background</th>
+        <th scope="col">Typical use</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        BACKGROUND_KINDS.map((kind) => (
+          <tr>
+            <th scope="row">{kind.name}</th>
+            <td set:html={inline(kind.sees)} />
+            <td>{kind.runs}</td>
+            <td set:html={inline(kind.use)} />
+          </tr>
+        ))
+      }
+    </tbody>
+  </DataTable>
+  <p class="t-body">
+    Need something else? Any <a href={LINKS.neuronDocs}>Neuron workflow</a> can become a background task by implementing one
+    interface.
+  </p>
+</Section>

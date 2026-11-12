@@ -1,0 +1,27 @@
+---
+interface Props {
+  columns: 2 | 3;
+  class?: string;
+}
+
+const { columns, class: className } = Astro.props;
+---
+
+<div class:list={['grid', `columns-${columns}`, className]}><slot /></div>
+
+<style lang="scss">
+  .grid {
+    display: grid;
+    align-items: start;
+  }
+
+  .columns-2 {
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min-wide), 100%), 1fr));
+    gap: var(--space-12);
+  }
+
+  .columns-3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min-narrow), 100%), 1fr));
+    gap: var(--space-8) var(--space-12);
+  }
+</style>

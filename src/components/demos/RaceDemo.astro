@@ -1,0 +1,114 @@
+---
+import { COMPETITORS, PARALLEL_MINUTES, RESEARCH_MINUTES, SAVED_MINUTES, SEQUENTIAL_MINUTES } from '../../consts/example';
+import { PRODUCT_NAME } from '../../consts/product';
+import { capitalize, minutesLong, numberWord } from '../../lib/format';
+import { RACE_LENGTH, raceState } from '../../lib/demos/race';
+import { percent } from '../../lib/timeline';
+import Card from '../Card.astro';
+import Timeline from '../Timeline.astro';
+import ReplayButton from './ReplayButton.astro';
+
+const state = raceState(RACE_LENGTH - 1);
+---
+
+<Card data-demo="race" style={`--wash-left: ${percent(PARALLEL_MINUTES, SEQUENTIAL_MINUTES)}`}>
+  <div class="head">
+    <h3 class="t-title title">{capitalize(numberWord(COMPETITORS.length))} research tasks and a draft</h3>
+    <span class="clock">elapsed <span data-text="clock">{state.clock}</span></span>
+    <ReplayButton />
+  </div>
+  <Timeline total={SEQUENTIAL_MINUTES} step={RESEARCH_MINUTES} rows={state.sequential.rows} data-timeline="sequential">
+    <Fragment slot="head">
+      <span class="lane-title">Without background tasks</span>
+      <span class="lane-status" data-text="sequential-status">{state.sequential.status}</span>
+    </Fragment>
+  </Timeline>
+  <Timeline total={SEQUENTIAL_MINUTES} step={RESEARCH_MINUTES} rows={state.parallel.rows} data-timeline="parallel">
+    <Fragment slot="head">
+      <span class="lane-title">With {PRODUCT_NAME}</span>
+      <span class="lane-status" data-text="parallel-status">{state.parallel.status}</span>
+    </Fragment>
+    <Fragment slot="note">
+      <span class="saved-wash" data-if="saved" hidden={!state.saved}></span>
+      <span class="saved" data-if="saved" hidden={!state.saved}>{minutesLong(SAVED_MINUTES)} back</span>
+    </Fragment>
+  </Timeline>
+</Card>
+
+<script>
+  import { RACE_LENGTH, raceState } from '../../lib/demos/race';
+  import type { TimelineRow } from '../../lib/timeline';
+  import { runDemo, setShown, setText } from '../../scripts/demo';
+
+  const root = document.querySelector<HTMLElement>('[data-demo="race"]')!;
+  const rowsOf = (name: string) => [...root.querySelectorAll<HTMLElement>(`[data-timeline="${name}"] [data-row]`)];
+  const sequential = rowsOf('sequential');
+  const parallel = rowsOf('parallel');
+
+  const fill = (elements: HTMLElement[], rows: TimelineRow[]) =>
+    rows.forEach((row, i) => {
+      elements[i].querySelector<HTMLElement>('[data-bar]')!.style.setProperty('--width', row.width);
+      setText(elements[i], 'bar', row.text);
+      setShown(elements[i], 'wash', !!row.wash);
+    });
+
+  runDemo(root, RACE_LENGTH, (t) => {
+    const state = raceState(t);
+    setText(root, 'clock', state.clock);
+    setText(root, 'sequential-status', state.sequential.status);
+    setText(root, 'parallel-status', state.parallel.status);
+    setShown(root, 'saved', state.saved);
+    fill(sequential, state.sequential.rows);
+    fill(parallel, state.parallel.rows);
+  });
+</script>
+
+<style lang="scss">
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .title {
+    flex: 1 1 auto;
+  }
+
+  .clock {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  .lane-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-compact);
+  }
+
+  .lane-status {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .saved-wash {
+    position: absolute;
+    inset-block: 0;
+    left: var(--wash-left);
+    right: 0;
+    background: var(--color-accent-wash);
+  }
+
+  .saved {
+    position: absolute;
+    top: 0;
+    left: calc(var(--wash-left) + var(--space-2-5));
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--size-timeline-row);
+    color: var(--color-accent-text);
+    white-space: nowrap;
+  }
+</style>

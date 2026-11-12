@@ -1,0 +1,81 @@
+---
+import Container from './Container.astro';
+import Split from './Split.astro';
+
+interface Props {
+  id: string;
+  heading: string;
+  /** A band with a line above and below it. */
+  bordered?: boolean;
+  class?: string;
+}
+
+const { id, heading, bordered = false, class: className } = Astro.props;
+const hasLead = Astro.slots.has('lead');
+---
+
+{/*
+  With an `aside` slot, the heading, lead and default slot share the main column, the aside sits next to them,
+  and the `after` slot runs full width below. Without one, the default slot runs full width below the heading.
+*/}
+<section id={id} class:list={['section', { bordered }, className]}>
+  <Container class="body">
+    {
+      Astro.slots.has('aside') ? (
+        <>
+          <Split offset>
+            <h2 class="t-heading">{heading}</h2>
+            {hasLead && (
+              <p class="t-lead muted">
+                <slot name="lead" />
+              </p>
+            )}
+            <slot />
+            <slot name="aside" slot="aside" />
+          </Split>
+          <slot name="after" />
+        </>
+      ) : (
+        <>
+          <div class="intro measure">
+            <h2 class="t-heading">{heading}</h2>
+            {hasLead && (
+              <p class="t-lead muted">
+                <slot name="lead" />
+              </p>
+            )}
+          </div>
+          <slot />
+        </>
+      )
+    }
+  </Container>
+</section>
+
+<style lang="scss">
+  .section {
+    padding-block: var(--section-padding);
+  }
+
+  .bordered {
+    border-block: var(--border-width) solid var(--color-line);
+  }
+
+  // Two plain sections in a row share one gap instead of stacking their padding.
+  .section:not(.bordered) + .section:not(.bordered),
+  :global(.page-hero) + .section:not(.bordered) {
+    padding-top: 0;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-gap);
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+</style>

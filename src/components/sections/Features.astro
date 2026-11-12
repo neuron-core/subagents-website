@@ -1,0 +1,107 @@
+---
+import {
+  COMPETITORS,
+  DRAFT_MINUTES,
+  PARALLEL_MINUTES,
+  RELEASE_VERSION,
+  RESEARCH_MINUTES,
+  SEQUENTIAL_MINUTES,
+} from '../../consts/example';
+import { PRODUCT_NAME } from '../../consts/product';
+import { SNIPPETS } from '../../consts/snippets';
+import { clock, listOf, minutes, minutesLong } from '../../lib/format';
+import CodeCard from '../CodeCard.astro';
+import DataTable from '../DataTable.astro';
+import RaceDemo from '../demos/RaceDemo.astro';
+import Section from '../Section.astro';
+import Split from '../Split.astro';
+
+const at = (minute: number) => clock(minute * 60);
+const researchEnd = COMPETITORS.length * RESEARCH_MINUTES;
+
+const comparison = [
+  ...COMPETITORS.map((name, i) => [
+    `Research ${name} (≈${minutes(RESEARCH_MINUTES)})`,
+    `${at(i * RESEARCH_MINUTES)} → ${at((i + 1) * RESEARCH_MINUTES)}`,
+    `${at(0)} → ${at(RESEARCH_MINUTES)}, in its own process`,
+  ]),
+  [
+    'Draft the release notes',
+    `${at(researchEnd)} → ${at(SEQUENTIAL_MINUTES)}`,
+    `${at(0)} → ${at(DRAFT_MINUTES)}, while the research runs`,
+  ],
+  ['The user can use the chat', `after ${minutesLong(SEQUENTIAL_MINUTES)}`, `after about ${minutesLong(DRAFT_MINUTES)}`],
+  ['The comparison is ready', `after ${minutesLong(SEQUENTIAL_MINUTES)}`, `after about ${minutesLong(PARALLEL_MINUTES)}`],
+];
+---
+
+<Section id="features" heading="Do more at once, finish sooner">
+  <h3 class="t-title">Run tools and sub-agents in parallel</h3>
+  <p class="t-body">
+    Every background task runs in its own process. When the model starts three tasks, all three run at the same time, and
+    the agent doesn't sit idle while they do: it can keep working on the parts of the job that don't depend on them.
+  </p>
+  <Fragment slot="aside">
+    <p class="t-body"><strong>An example.</strong> Your user asks:</p>
+    <blockquote class="t-title quote">
+      “Compare our pricing with {listOf(COMPETITORS)}, and draft the release notes for version {RELEASE_VERSION}.”
+    </blockquote>
+  </Fragment>
+  <Fragment slot="after">
+    <RaceDemo />
+    <Split>
+      <p class="t-lead">
+        The longer and more independent the jobs, the bigger the gain: the agent finishes in the time of its slowest task,
+        not the sum of all of them.
+      </p>
+      <p class="t-caption muted">
+        Times are illustrative. How many tasks truly run at once depends on how you run them: one process each by default,
+        or as many queue workers as you give them.
+      </p>
+      <DataTable slot="aside">
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Step</span></th>
+            <th scope="col">Without background tasks</th>
+            <th scope="col">With {PRODUCT_NAME}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            comparison.map(([step, without, withSubagents]) => (
+              <tr>
+                <th scope="row">{step}</th>
+                <td>{without}</td>
+                <td>{withSubagents}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </DataTable>
+    </Split>
+    <Split class="divided">
+      <h3 class="t-title">Sub-agents: specialists with a clean desk</h3>
+      <p class="t-body">
+        A <strong>sub-agent</strong> is a whole agent that your main agent can hand a job to: a researcher, a code reviewer, a
+        data analyst. It gets only the instructions the main agent writes for it, not the whole conversation, so it starts
+        focused and doesn't fill the main conversation with its intermediate steps. The main agent reads its final report.
+      </p>
+      <p class="t-body">
+        The model sees a tool called <code class="ic">researcher</code> with one argument, <code class="ic">prompt</code>.
+        <code class="ic">ResearchAgent</code> is any agent of yours: nothing in it is specific to this package.
+      </p>
+      <CodeCard slot="aside" title="PHP" snippet={SNIPPETS.subagent} />
+    </Split>
+  </Fragment>
+</Section>
+
+<style lang="scss">
+  .quote {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .divided {
+    padding-top: var(--space-12);
+    border-top: var(--border-width) solid var(--color-line);
+  }
+</style>

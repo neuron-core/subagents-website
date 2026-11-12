@@ -1,0 +1,19 @@
+---
+import { BRAND } from '../../consts/product';
+import { LINKS } from '../../consts/site';
+import Button from '../Button.astro';
+import ChatDemo from '../demos/ChatDemo.astro';
+import PageHero from '../PageHero.astro';
+---
+
+<PageHero id="top" heading="Your AI agent shouldn't make everyone wait.">
+  <Fragment slot="lead">
+    Give any <a href={LINKS.neuronGithub}>{BRAND}</a> agent background tools and sub-agents. It hands slow work to other
+    processes, runs it side by side, and keeps talking with your user. When the work is done, the agent picks up the
+    results and carries on, by itself.
+  </Fragment>
+  <Button href={LINKS.contact}>Talk to us</Button>
+  <Button href="#how-it-works" variant="quiet">See how it works</Button>
+  <Fragment slot="note">An advanced extension of {BRAND}, available under a commercial license.</Fragment>
+  <ChatDemo slot="aside" name="hero" agent="Support agent" thread="SupportAgent · thread 7c41e2" height="lg" />
+</PageHero>

@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'span'> & {
+  size?: 'sm' | 'md';
+};
+
+const { size = 'md', class: className, ...rest } = Astro.props;
+---
+
+<span class:list={['spinner', size, className]} aria-hidden="true" {...rest}></span>
+
+<style lang="scss">
+  .spinner {
+    display: inline-block;
+    flex: none;
+    border-radius: var(--radius-full);
+    border: var(--border-width-thick) solid var(--color-line);
+    border-top-color: var(--color-text-muted);
+    animation: spin var(--duration-spin) linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .spinner.md {
+    width: var(--size-spinner);
+    height: var(--size-spinner);
+  }
+
+  .spinner.sm {
+    width: var(--size-spinner-sm);
+    height: var(--size-spinner-sm);
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

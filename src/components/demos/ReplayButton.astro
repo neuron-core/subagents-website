@@ -1,0 +1,39 @@
+---
+import Icon from '../Icon.astro';
+---
+
+<button type="button" class="replay" data-replay><Icon name="replay" /><span>Replay</span></button>
+
+<style lang="scss">
+  .replay {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1-5);
+    flex: none;
+    min-width: var(--size-control);
+    height: var(--size-control);
+    padding-inline: var(--space-3);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-none);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease),
+      color var(--duration-fast) var(--ease);
+
+    &:hover {
+      background: var(--color-surface-sunken);
+      color: var(--color-text);
+    }
+  }
+
+  :global([data-theme='ink']) .replay:hover {
+    background: var(--color-surface);
+  }
+</style>

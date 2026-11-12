@@ -1,0 +1,43 @@
+---
+import { SNIPPETS } from '../../consts/snippets';
+import CodeCard from '../CodeCard.astro';
+import DeliveryDemo from '../demos/DeliveryDemo.astro';
+import RuleList from '../RuleList.astro';
+import Section from '../Section.astro';
+---
+
+<Section id="delivery" heading="The agent picks up where it left off, on its own">
+  <Fragment slot="lead">This is what turns background tasks from a job queue into a real agent feature.</Fragment>
+  <p class="t-body">
+    When a task finishes, you don't poll for it, and your user doesn't have to ask “is it done yet?”. The result is delivered
+    into the conversation as a message, and that message <strong>starts a new turn of the agent</strong>. The model reads the
+    result with the whole conversation in front of it, and continues the work: it summarises the research, fixes the failing
+    test, or starts the next step.
+  </p>
+  <p class="t-body">
+    <strong>Results wait for the right moment.</strong> A conversation can only do one thing at a time, so the delivery is
+    careful never to talk over anyone:
+  </p>
+  <RuleList>
+    <li><strong>The conversation is free:</strong> the result is delivered right away, and the agent answers it.</li>
+    <li>
+      <strong>The agent is busy answering something else:</strong> the result waits a few seconds and tries again, until that
+      turn has ended. It never interrupts a turn in progress.
+    </li>
+    <li>
+      <strong>The conversation waits for your user</strong>, for example on a tool call that needs their approval: the result
+      waits until that is settled.
+    </li>
+    <li>
+      <strong>Several tasks finish close together:</strong> they are delivered together, in one message, so the agent answers
+      them in a single turn instead of one turn each.
+    </li>
+  </RuleList>
+  <p class="t-body">
+    The model is told that a delivered message was written by the system, not by the user, and that everything inside a
+    result is data, never instructions. Every result is wrapped in tags the result itself cannot fake, so a web page that a
+    sub-agent read can't end its block early and pretend to be your user.
+  </p>
+  <DeliveryDemo slot="aside" />
+  <CodeCard slot="after" title="The delivered message" snippet={SNIPPETS.results} />
+</Section>

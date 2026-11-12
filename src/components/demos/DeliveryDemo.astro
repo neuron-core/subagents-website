@@ -1,0 +1,153 @@
+---
+import { DOORS, deliveryScript, deliveryState } from '../../lib/demos/delivery';
+import ChatPanel from './ChatPanel.astro';
+
+const state = deliveryState(deliveryScript.length - 1);
+---
+
+<ChatPanel demo="delivery" agent="Support agent" thread="SupportAgent · thread 7c41e2" height="md" state={state} chips>
+  <div class="delivery" slot="footer">
+    <div class="delivery-head">
+      <span class="label">Delivery</span>
+      <span class="waiting" data-text="waiting">{state.waiting}</span>
+    </div>
+    <div class="columns">
+      {
+        DOORS.map((door) => (
+          <div class="door" data-door={door.id} data-active={String(door.id === state.door)}>
+            <span class="door-title">
+              <span class="door-dot" />
+              {door.title}
+            </span>
+            <span class="door-body">{door.body}</span>
+          </div>
+        ))
+      }
+    </div>
+    <div class="columns" aria-hidden="true">
+      {DOORS.map(() => <span class="connector" />)}
+    </div>
+    <div class="continues" data-continues data-active={String(state.continues)}>The agent continues</div>
+  </div>
+</ChatPanel>
+
+<script>
+  import { APPROVE_TIME, deliveryScript, deliveryState } from '../../lib/demos/delivery';
+  import { patchChat, runDemo, setData, setText } from '../../scripts/demo';
+
+  const root = document.querySelector<HTMLElement>('[data-demo="delivery"]')!;
+  const doors = [...root.querySelectorAll<HTMLElement>('[data-door]')];
+  const continues = root.querySelector<HTMLElement>('[data-continues]')!;
+
+  const demo = runDemo(root, deliveryScript.length, (t) => {
+    const state = deliveryState(t);
+    patchChat(root, state);
+    setText(root, 'waiting', state.waiting);
+    for (const door of doors) setData(door, 'active', String(door.dataset.door === state.door));
+    setData(continues, 'active', String(state.continues));
+  });
+
+  root.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('[data-approve]')) demo.jump(APPROVE_TIME);
+  });
+</script>
+
+<style lang="scss">
+  .delivery {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2-5);
+    padding: var(--space-4);
+    border-top: var(--border-width) solid var(--color-line);
+  }
+
+  .delivery-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+  }
+
+  .label {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .door {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    padding: var(--space-2-5);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    transition: background-color var(--duration-base) var(--ease);
+  }
+
+  .door-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-title);
+    color: var(--color-text);
+  }
+
+  .door-dot {
+    flex: none;
+    width: var(--size-dot);
+    height: var(--size-dot);
+    border-radius: var(--radius-full);
+    background: var(--color-line-strong);
+  }
+
+  .door-body {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .door[data-active='true'] {
+    background: var(--color-accent-wash);
+
+    .door-title {
+      color: var(--color-accent-text);
+    }
+
+    .door-dot {
+      background: var(--color-orange);
+    }
+  }
+
+  .connector {
+    justify-self: center;
+    width: var(--border-width);
+    height: var(--size-connector);
+    background: var(--color-line-strong);
+  }
+
+  .continues {
+    padding: var(--space-2-5) var(--space-3);
+    border: var(--border-width) solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-title);
+    transition: background-color var(--duration-base) var(--ease);
+
+    &[data-active='true'] {
+      background: var(--color-accent-wash);
+      color: var(--color-accent-text);
+    }
+  }
+</style>

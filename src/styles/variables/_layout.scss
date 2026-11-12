@@ -1,0 +1,44 @@
+@use 'breakpoints' as *;
+
+:root {
+  --container-max: 1200px;
+  --container-gutter: var(--space-4);
+  --measure: 62ch;
+  --measure-display: 20ch;
+  --scroll-offset: 72px;
+
+  --section-padding: var(--space-16);
+  --section-gap: var(--space-8);
+  --split-gap: var(--space-12);
+  --split-offset: 0;
+  --row-column-gap: var(--space-12);
+
+  --grid-min-wide: 440px;
+  --grid-min-narrow: 320px;
+  --grid-min-list: 340px;
+  --table-min: 600px;
+
+  --bubble-max: 85%;
+  --bubble-agent-max: 95%;
+
+  --chat-height-xs: 230px;
+  --chat-height-sm: 300px;
+  --chat-height-md: 340px;
+  --chat-height-lg: 380px;
+  --chat-height-xl: 420px;
+  --log-height: 124px;
+  --prop-key-width: 168px;
+
+  @include md {
+    --container-gutter: var(--space-6);
+    --row-column-gap: var(--space-8);
+  }
+
+  @include lg {
+    --section-padding: var(--space-24);
+    --section-gap: var(--space-12);
+    --split-gap: var(--space-16);
+    --split-offset: var(--space-16);
+    --row-column-gap: var(--space-16);
+  }
+}

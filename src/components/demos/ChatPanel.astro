@@ -1,0 +1,251 @@
+---
+import type { ChatState, Chip, Message } from '../../lib/demos/chat';
+import { STATUS_TEXT } from '../../lib/demos/chat';
+import Spinner from '../Spinner.astro';
+import Caret from './Caret.astro';
+import ChatChip from './ChatChip.astro';
+import ChatMessage from './ChatMessage.astro';
+import ReplayButton from './ReplayButton.astro';
+
+interface Props {
+  /** Read by the demo's script, as `[data-demo="…"]`. */
+  demo: string;
+  agent: string;
+  thread: string;
+  height: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /** The state the panel renders before its script runs: the demo's final moment. */
+  state: ChatState;
+  /** Shows the background tasks as chips above the composer. */
+  chips?: boolean;
+  class?: string;
+}
+
+const { demo, agent, thread, height, state, chips = false, class: className } = Astro.props;
+
+// Blank copies of every item kind, cloned by the script when a new message or chip appears.
+const blankMessages: Message[] = [
+  { kind: 'user', text: '' },
+  { kind: 'agent', text: '', streaming: false },
+  { kind: 'call', name: '', args: '' },
+  { kind: 'ret', text: '' },
+  { kind: 'sys', title: '', body: '' },
+  { kind: 'approval', name: '', approved: false },
+];
+const blankChip: Chip = { tool: '', label: '', done: false, meta: '' };
+---
+
+{/* The `tray` slot sits between the chat and the composer; the `footer` slot sits below the composer. */}
+<div class:list={['panel', className]} data-theme="ink" data-demo={demo}>
+  <div class="head">
+    <div class="who">
+      <span class="agent-name">{agent}</span>
+      <span class="thread">{thread}</span>
+    </div>
+    <span class="status">
+      <Spinner data-if="busy" hidden={!state.busy} />
+      <span class="ready" data-if="idle" hidden={state.busy}></span>
+      <span data-text="status">{state.busy ? STATUS_TEXT.busy : STATUS_TEXT.idle}</span>
+    </span>
+    <ReplayButton />
+  </div>
+  <div class:list={['chat', height]}>
+    <div class="messages" data-list="messages">
+      {state.msgs.map((message) => <ChatMessage message={message} />)}
+    </div>
+    <div class="typing" data-if="typing" hidden={!state.typing} aria-hidden="true">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+  </div>
+  {
+    chips && (
+      <div class="chips" data-list="chips">
+        {state.chips.map((chip) => (
+          <ChatChip chip={chip} />
+        ))}
+      </div>
+    )
+  }
+  <slot name="tray" />
+  <div class="composer-wrap">
+    <div class="composer">
+      <span class="typed" data-if="typed" hidden={state.input === ''}>
+        <span data-text="input">{state.input}</span><Caret thin />
+      </span>
+      <span class="placeholder" data-if="empty" hidden={state.input !== ''}>Message the agent</span>
+    </div>
+  </div>
+  <slot name="footer" />
+  {
+    blankMessages.map((message) => (
+      <template data-template={message.kind}>
+        <ChatMessage message={message} />
+      </template>
+    ))
+  }
+  {
+    chips && (
+      <template data-template="chip">
+        <ChatChip chip={blankChip} />
+      </template>
+    )
+  }
+</div>
+
+<style lang="scss">
+  .panel {
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-menu);
+    background: var(--color-ground);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--size-panel-head);
+    padding: var(--space-1-5) var(--space-2) var(--space-1-5) var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-line);
+  }
+
+  .who {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .agent-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-compact);
+  }
+
+  .thread {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .status {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .ready {
+    flex: none;
+    width: var(--size-dot);
+    height: var(--size-dot);
+    border-radius: var(--radius-full);
+    background: var(--color-ok);
+  }
+
+  .chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    overflow: hidden;
+  }
+
+  .chat.xs {
+    height: var(--chat-height-xs);
+  }
+
+  .chat.sm {
+    height: var(--chat-height-sm);
+  }
+
+  .chat.md {
+    height: var(--chat-height-md);
+  }
+
+  .chat.lg {
+    height: var(--chat-height-lg);
+  }
+
+  .chat.xl {
+    height: var(--chat-height-xl);
+  }
+
+  .messages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .typing {
+    display: flex;
+    gap: var(--space-1);
+    padding-block: var(--space-1-5);
+  }
+
+  .dot {
+    width: var(--size-dot-sm);
+    height: var(--size-dot-sm);
+    border-radius: var(--radius-full);
+    background: var(--color-text-muted);
+    animation: blink var(--duration-blink) infinite both;
+
+    &:nth-child(2) {
+      animation-delay: var(--duration-fast);
+    }
+
+    &:nth-child(3) {
+      animation-delay: var(--duration-slow);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    min-height: var(--space-10);
+    padding: 0 var(--space-4) var(--space-3);
+  }
+
+  .composer-wrap {
+    padding: 0 var(--space-4) var(--space-4);
+  }
+
+  .composer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--size-control);
+    padding-inline: var(--space-3);
+    border: var(--border-width) solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-compact);
+  }
+
+  .placeholder {
+    color: var(--color-text-muted);
+  }
+
+  @keyframes blink {
+    0%,
+    80%,
+    100% {
+      opacity: 0.25;
+    }
+
+    40% {
+      opacity: 1;
+    }
+  }
+</style>

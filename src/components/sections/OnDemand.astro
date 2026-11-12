@@ -1,0 +1,40 @@
+---
+import { BASH_TIMEOUT_SECONDS } from '../../consts/product';
+import { SNIPPETS } from '../../consts/snippets';
+import { minutesLong } from '../../lib/format';
+import CodeCard from '../CodeCard.astro';
+import ChatDemo from '../demos/ChatDemo.astro';
+import RuleList from '../RuleList.astro';
+import Section from '../Section.astro';
+---
+
+<Section id="on-demand" heading="Long commands in the background, a free chat for your user">
+  <Fragment slot="lead">
+    Some tools are fast most of the time and slow some of the time. <code class="ic">bash</code> is the classic case:
+    <code class="ic">ls</code> takes a millisecond, the full test suite takes twenty minutes.
+  </Fragment>
+  <p class="t-body">With an <strong>on-demand</strong> background tool, the model picks the mode call by call:</p>
+  <RuleList>
+    <li>
+      <strong>A normal call</strong> runs right away inside the turn, and the model reads the output immediately, like any tool.
+    </li>
+    <li>
+      <strong>A call with <code class="ic">run_in_background: true</code></strong> becomes a background task. The agent replies,
+      and the user can keep chatting about something else while the command runs.
+    </li>
+  </RuleList>
+  <p class="t-body">
+    Here a normal <code class="ic">bash</code> call keeps its usual short time limit, while a background call may run for
+    {minutesLong(BASH_TIMEOUT_SECONDS.background / 60)}. You don't have to explain any of this in your prompts: the toolkit
+    tells the model which tools run in the background, when to use <code class="ic">run_in_background</code>, and how to read
+    results when they arrive.
+  </p>
+  <p class="t-body">
+    For tools that are <em>always</em> slow, such as a deployment, skip <code class="ic">onDemand()</code>: every call then runs
+    in the background, and the model sees the tool as <code class="ic">deploy_background</code>.
+  </p>
+  <Fragment slot="aside">
+    <ChatDemo name="bash" agent="Dev agent" thread="DevAgent · thread 3b90af" height="xl" />
+    <CodeCard title="PHP" snippet={SNIPPETS.onDemand} />
+  </Fragment>
+</Section>

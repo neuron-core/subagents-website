@@ -1,0 +1,28 @@
+---
+import { BASIC_TERMS } from '../../consts/product';
+import { capitalize, numberWord } from '../../lib/format';
+import Row from '../Row.astro';
+import Section from '../Section.astro';
+---
+
+<Section id="basics" heading={`New to agents? ${capitalize(numberWord(BASIC_TERMS.length))} words first`}>
+  <Fragment slot="lead">
+    This page uses a few words that are still new to many developers. Here is all you need to follow along.
+  </Fragment>
+  <dl>
+    {
+      BASIC_TERMS.map(({ term, definition }) => (
+        <Row>
+          <dt slot="label" class="t-title">
+            {term}
+          </dt>
+          <dd class="t-body muted">{definition}</dd>
+        </Row>
+      ))
+    }
+  </dl>
+  <p class="t-lead measure">
+    Today, in most frameworks, a turn is <strong>synchronous</strong>: the agent cannot answer until every tool it called
+    has returned. That is the problem this package solves.
+  </p>
+</Section>

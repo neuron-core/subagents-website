@@ -1,0 +1,51 @@
+---
+import { PRODUCT_NAME } from '../consts/product';
+import { LINKS, NAV } from '../consts/site';
+import Button from './Button.astro';
+import Container from './Container.astro';
+import Logo from './Logo.astro';
+import NavLink from './NavLink.astro';
+---
+
+<header class="header" data-theme="ink">
+  <Container class="bar">
+    <a class="home" href="#top" aria-label={`${PRODUCT_NAME}, back to the top`}><Logo /></a>
+    <nav class="nav" aria-label="Sections">
+      {NAV.map((item) => <NavLink href={item.href}>{item.label}</NavLink>)}
+    </nav>
+    <Button href={LINKS.contact}>Talk to us</Button>
+  </Container>
+</header>
+
+<style lang="scss">
+  @use 'variables/breakpoints' as *;
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    border-bottom: var(--border-width) solid var(--color-line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: var(--size-header);
+  }
+
+  .home {
+    margin-inline-end: auto;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .nav {
+    display: none;
+    gap: var(--space-1);
+
+    @include lg {
+      display: flex;
+    }
+  }
+</style>

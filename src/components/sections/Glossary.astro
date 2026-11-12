@@ -1,0 +1,49 @@
+---
+import Section from '../Section.astro';
+
+const terms = [
+  ['Agent', 'a program that uses a language model to decide which tools to call and how to answer.'],
+  ['Tool', 'a function the agent can call.'],
+  ['Turn', "everything between a message and the agent's answer to it, tool calls included."],
+  ['Thread (conversation)', 'the history of messages between a user and an agent, identified by a thread ID your application owns.'],
+  ['Sub-agent', 'an agent that another agent hands a job to, and whose final answer it reads.'],
+  ['Background task', 'a tool call or a sub-agent job that runs in another process, identified by a task ID.'],
+  ['Worker', 'the process that runs a background task.'],
+  ['Delivery', "the step that brings finished results back into the conversation and starts the agent's next turn."],
+  ['Sweep', 'a small command, scheduled every minute, that restarts work lost to a crash.'],
+  ['Persistence', 'the database where Neuron keeps the state of agents and tasks, shared by every process.'],
+];
+---
+
+<Section id="glossary" heading="Glossary">
+  <dl class="terms">
+    {
+      terms.map(([term, definition]) => (
+        <div class="term">
+          <dt class="t-small name">{term}</dt>
+          <dd class="t-small muted">{definition}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</Section>
+
+<style lang="scss">
+  .terms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min-wide), 100%), 1fr));
+    gap: 0 var(--space-12);
+  }
+
+  .term {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    padding-block: var(--space-3-5);
+    border-top: var(--border-width) solid var(--color-line);
+  }
+
+  .name {
+    font-weight: var(--font-weight-semibold);
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import { ANSWER_MINUTES, COMPETITORS, RESEARCH_MINUTES, SYNC_TURN_MINUTES } from '../../consts/example';
+import { minutes } from '../../lib/format';
+import { percent, type TimelineRow } from '../../lib/timeline';
+import Card from '../Card.astro';
+import RuleList from '../RuleList.astro';
+import Section from '../Section.astro';
+import Spinner from '../Spinner.astro';
+import Timeline from '../Timeline.astro';
+
+const span = (from: number, length: number) => ({
+  left: percent(from, SYNC_TURN_MINUTES),
+  width: percent(length, SYNC_TURN_MINUTES),
+});
+
+const rows: TimelineRow[] = [
+  ...COMPETITORS.map((name, i) => ({
+    label: `web_research("${name}")`,
+    mono: true,
+    ...span(i * RESEARCH_MINUTES, RESEARCH_MINUTES),
+    text: minutes(RESEARCH_MINUTES),
+  })),
+  {
+    label: 'Write the answer',
+    ...span(COMPETITORS.length * RESEARCH_MINUTES, ANSWER_MINUTES),
+    text: minutes(ANSWER_MINUTES),
+  },
+  { label: 'Chat input', highlight: true, ...span(0, SYNC_TURN_MINUTES), text: `locked for ${minutes(SYNC_TURN_MINUTES)}` },
+];
+---
+
+<Section id="problem" heading="The problem: one slow tool freezes the whole conversation">
+  <Fragment slot="lead">
+    An agent works in a loop: the model thinks, calls a tool, waits for the result, thinks again, calls the next tool, and
+    so on until it can answer. Every tool call is a wait, and the waits add up.
+  </Fragment>
+  <p class="t-body">This is fine when tools take milliseconds. It breaks down as soon as your agent does real work:</p>
+  <RuleList>
+    <li>
+      <strong>Your user stares at a spinner.</strong> A research task that reads twenty web pages, a test suite, a data export,
+      a deployment: minutes, not seconds. Nobody can use the chat in the meantime.
+    </li>
+    <li>
+      <strong>Work happens one step at a time.</strong> Three independent research jobs run one after another, even though
+      nothing stops them from running at the same moment.
+    </li>
+    <li>
+      <strong>Web requests time out.</strong> PHP and the web servers in front of it often cut a request after 30 or 60
+      seconds. A turn that runs longer simply dies, and so does the work.
+    </li>
+    <li>
+      <strong>A crash loses everything.</strong> If the process serving the turn stops, the tools it was waiting for stop with
+      it, and nobody knows how far they got.
+    </li>
+  </RuleList>
+  <p class="t-body">
+    The usual workaround is to build a job queue by hand, invent a way to send the result back to the model, and hope the
+    conversation is in a sane state when it arrives. That is a lot of hard, easy-to-get-wrong code, and it is the same code
+    in every project.
+  </p>
+  <Fragment slot="aside">
+    <Card>
+      <div class="card-head">
+        <h3 class="t-title">One synchronous turn</h3>
+        <span class="t-caption muted">{minutes(SYNC_TURN_MINUTES)}, start to answer</span>
+      </div>
+      <div class="frozen" aria-label="A frozen chat input">
+        <Spinner />
+        <span>Waiting…</span>
+      </div>
+      <Timeline total={SYNC_TURN_MINUTES} step={RESEARCH_MINUTES} rows={rows} />
+    </Card>
+    <p class="t-caption muted">Times are illustrative.</p>
+  </Fragment>
+</Section>
+
+<style lang="scss">
+  .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .frozen {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--size-control);
+    padding-inline: var(--space-3);
+    border: var(--border-width) solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-compact);
+  }
+</style>

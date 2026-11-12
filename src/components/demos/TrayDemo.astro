@@ -1,0 +1,260 @@
+---
+import { TRAY_DEFAULT_TASK, trayScript, trayState } from '../../lib/demos/tray';
+import Icon from '../Icon.astro';
+import ChatPanel from './ChatPanel.astro';
+import Pill from './Pill.astro';
+
+const state = trayState(trayScript.length - 1, TRAY_DEFAULT_TASK);
+---
+
+<ChatPanel demo="tray" agent="Support agent" thread="SupportAgent · thread 7c41e2" height="xs" state={state}>
+  <div class="tray" slot="tray">
+    <button type="button" class="tray-head" data-tray-toggle aria-expanded="true">
+      <span class="tray-title">Background tasks</span>
+      <span class="tray-count" data-text="count">{state.count}</span>
+      <Icon name="chevron-down" class="chevron" />
+    </button>
+    <ul class="tasks" data-list="tasks">
+      {
+        state.tasks.map((task) => (
+          <li class="task-item" data-kind="task">
+            <button type="button" class="task" data-task={task.id} aria-pressed={task.selected ? 'true' : 'false'}>
+              <span class="task-tool" data-text="tool">
+                {task.tool}
+              </span>
+              <span class="task-title" data-text="title">
+                {task.title}
+              </span>
+              <Pill status={task.status}>{task.statusText}</Pill>
+              <span class="task-elapsed" data-text="elapsed">
+                {task.elapsed}
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+    <template data-template="task">
+      <li class="task-item" data-kind="task">
+        <button type="button" class="task" aria-pressed="false">
+          <span class="task-tool" data-text="tool"></span>
+          <span class="task-title" data-text="title"></span>
+          <Pill status="queued" />
+          <span class="task-elapsed" data-text="elapsed"></span>
+        </button>
+      </li>
+    </template>
+  </div>
+  <div class="ledger" slot="footer">
+    <span class="note">The selected task, read from the ledger. Pick another one above.</span>
+    <div class="properties" data-list="properties">
+      {
+        state.properties.map((property) => (
+          <div class="property" data-kind="property" data-hot={String(property.hot)}>
+            <span class="property-key" data-text="key">
+              {property.key}
+            </span>
+            <span class="property-value" data-text="value">
+              {property.value}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+    <span class="note" data-if="gone" hidden={!state.selectedGone}>
+      Stopped and gone from the tray: a stopped task reports nothing.
+    </span>
+  </div>
+</ChatPanel>
+
+<script>
+  import { TRAY_DEFAULT_TASK, trayScript, trayState } from '../../lib/demos/tray';
+  import { patchChat, patchList, runDemo, setData, setShown, setText } from '../../scripts/demo';
+
+  const root = document.querySelector<HTMLElement>('[data-demo="tray"]')!;
+  const toggle = root.querySelector<HTMLButtonElement>('[data-tray-toggle]')!;
+  const tasks = root.querySelector<HTMLElement>('[data-list="tasks"]')!;
+  const properties = root.querySelector('[data-list="properties"]')!;
+  let selected = TRAY_DEFAULT_TASK;
+
+  const demo = runDemo(root, trayScript.length, (t) => {
+    const state = trayState(t, selected);
+    patchChat(root, state);
+    setText(root, 'count', state.count);
+    setShown(root, 'gone', state.selectedGone);
+    patchList(root, tasks, state.tasks, () => 'task', (el, task) => {
+      const button = el.querySelector<HTMLElement>('[aria-pressed]')!;
+      setData(button, 'task', task.id);
+      button.setAttribute('aria-pressed', String(task.selected));
+      setText(el, 'tool', task.tool);
+      setText(el, 'title', task.title);
+      setText(el, 'pill', task.statusText);
+      setText(el, 'elapsed', task.elapsed);
+      setData(el.querySelector<HTMLElement>('[data-status]')!, 'status', task.status);
+    });
+    patchList(root, properties, state.properties, () => 'property', (el, property) => {
+      setText(el, 'key', property.key);
+      setText(el, 'value', property.value);
+      setData(el, 'hot', String(property.hot));
+    });
+  });
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    tasks.hidden = !open;
+  });
+
+  tasks.addEventListener('click', (event) => {
+    const task = (event.target as Element).closest<HTMLElement>('[data-task]');
+    if (!task) return;
+    selected = task.dataset.task!;
+    demo.redraw();
+  });
+</script>
+
+<style lang="scss">
+  .tray {
+    margin: 0 var(--space-4) var(--space-3);
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .tray-head,
+  .task {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+    width: 100%;
+    min-height: var(--size-control);
+    padding-inline: var(--space-3);
+    border: 0;
+    color: var(--color-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .tray-head {
+    background: transparent;
+  }
+
+  .tray-title {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-compact);
+  }
+
+  .tray-count {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .chevron {
+    margin-left: auto;
+    color: var(--color-text-muted);
+    transition: transform var(--duration-fast) var(--ease);
+
+    [aria-expanded='true'] > & {
+      transform: rotate(180deg);
+    }
+  }
+
+  .tasks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .task-item {
+    border-top: var(--border-width) solid var(--color-line);
+  }
+
+  .task {
+    background: transparent;
+    transition: background-color var(--duration-fast) var(--ease);
+
+    &:hover {
+      box-shadow: inset 0 0 0 var(--border-width) var(--color-line-strong);
+    }
+
+    &[aria-pressed='true'] {
+      background: var(--color-surface-sunken);
+    }
+  }
+
+  .task-tool {
+    flex: none;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-compact);
+    color: var(--color-accent-text);
+  }
+
+  .task-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .task-elapsed {
+    flex: none;
+    width: var(--size-elapsed);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+    text-align: right;
+  }
+
+  .ledger {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    padding: var(--space-3-5) var(--space-4) var(--space-4);
+    border-top: var(--border-width) solid var(--color-line);
+    background: var(--color-surface-sunken);
+  }
+
+  .note {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .properties {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+  }
+
+  .property {
+    display: grid;
+    grid-template-columns: minmax(0, var(--prop-key-width)) minmax(0, 1fr);
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-code);
+  }
+
+  .property-key {
+    color: var(--color-text-muted);
+  }
+
+  .property-value {
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+    transition: color var(--duration-slow) var(--ease);
+
+    [data-hot='true'] > & {
+      color: var(--color-accent-text);
+    }
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+import { BRAND, FRAMEWORK_NAMES, MANAGEMENT_TOOLS, PRODUCT_NAME } from '../../consts/product';
+import { LINKS } from '../../consts/site';
+import { listOf } from '../../lib/format';
+import Row from '../Row.astro';
+import Section from '../Section.astro';
+
+const frameworks = listOf(FRAMEWORK_NAMES);
+---
+
+<Section id="faq" heading="Frequently asked questions">
+  <div>
+    <Row>
+      <h3 slot="label" class="t-body question">How is {PRODUCT_NAME} licensed?</h3>
+      <p class="t-body muted">
+        {BRAND} is open source, under the MIT license. {PRODUCT_NAME} is an advanced extension built on top of it, released
+        under a commercial license. The {frameworks} integrations build on it, so they need that license too.
+        <a href={LINKS.contact}>Talk to us</a> to find the license that fits your team.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Do I need to change my agents?</h3>
+      <p class="t-body muted">
+        No. Your agents stay ordinary Neuron agents. You add the background toolkit to their <code class="ic">tools()</code>,
+        and give them stores every process can see, such as a database.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Do I need a queue?</h3>
+      <p class="t-body muted">
+        No. Out of the box, each task runs in its own PHP process, started from your application. When you want a queue, the
+        {frameworks} packages use your framework's, and on any other stack you implement one small interface.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">What storage do I need?</h3>
+      <p class="t-body muted">
+        A store every process of your application can reach: a database or Redis. A single SQLite file is enough on one
+        machine. In-memory stores only work in tests, where everything runs in one process.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">What happens if my server restarts in the middle of a task?</h3>
+      <p class="t-body muted">
+        The sweep notices the task has no live worker and starts it again. A sub-agent continues from where it stopped. A
+        single tool call is reported as failed rather than run twice, because nobody can tell whether it already took effect.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Will a result interrupt my user while they're chatting?</h3>
+      <p class="t-body muted">
+        Never. A result waits until the agent has finished its current turn, and is delivered as soon as the conversation is
+        free.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Can the user, or the agent, cancel a task?</h3>
+      <p class="t-body muted">
+        The agent can, with <code class="ic">{MANAGEMENT_TOOLS.stop}</code>, whenever the user asks or the task is no longer
+        needed. The task ends at its next step. A single long call, such as one 20-minute command, stops when it returns.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Does the sub-agent see the whole conversation?</h3>
+      <p class="t-body muted">
+        No. It only receives the instructions the main agent writes for it. That keeps it focused, cheaper to run, and keeps
+        the main conversation free of its intermediate steps.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Can a sub-agent start background tasks of its own?</h3>
+      <p class="t-body muted">
+        Yes, if you give it the background toolkit. Its results then come back to its own conversation, not to your user's.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">What about tools that need human approval?</h3>
+      <p class="t-body muted">
+        The approval is asked in the conversation, before the task starts. A task never waits for a person that isn't there.
+      </p>
+    </Row>
+    <Row>
+      <h3 slot="label" class="t-body question">Does it work on Windows?</h3>
+      <p class="t-body muted">
+        The built-in process runner needs a POSIX shell, so it runs on Linux and macOS. On Windows, run the tasks on a queue.
+      </p>
+    </Row>
+  </div>
+</Section>
+
+<style lang="scss">
+  .question {
+    font-weight: var(--font-weight-semibold);
+  }
+</style>

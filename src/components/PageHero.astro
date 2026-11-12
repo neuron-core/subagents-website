@@ -1,0 +1,68 @@
+---
+import Actions from './Actions.astro';
+import Container from './Container.astro';
+import Split from './Split.astro';
+
+interface Props {
+  id: string;
+  heading: string;
+  /** `opening` tops the page with an h1 and an aside; `closing` is the dark call to action at the end. */
+  variant?: 'opening' | 'closing';
+}
+
+const { id, heading, variant = 'opening' } = Astro.props;
+const closing = variant === 'closing';
+---
+
+<section id={id} class:list={['page-hero', variant]} data-theme={closing ? 'ink' : undefined}>
+  <Container>
+    {
+      closing ? (
+        <div class="intro">
+          <h2 class="t-display heading">{heading}</h2>
+          <p class="t-lead measure muted">
+            <slot name="lead" />
+          </p>
+          <Actions>
+            <slot />
+          </Actions>
+          <p class="t-caption muted">
+            <slot name="note" />
+          </p>
+        </div>
+      ) : (
+        <Split offset>
+          <div class="intro">
+            <h1 class="t-display">{heading}</h1>
+            <p class="t-lead measure muted">
+              <slot name="lead" />
+            </p>
+            <Actions>
+              <slot />
+            </Actions>
+            <p class="t-small muted">
+              <slot name="note" />
+            </p>
+          </div>
+          <slot name="aside" slot="aside" />
+        </Split>
+      )
+    }
+  </Container>
+</section>
+
+<style lang="scss">
+  .page-hero {
+    padding-block: var(--section-padding);
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .heading {
+    max-width: var(--measure-display);
+  }
+</style>

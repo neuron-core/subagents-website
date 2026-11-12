@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'span'> & {
+  /** A thin text cursor, for the composer. */
+  thin?: boolean;
+};
+
+const { thin = false, class: className, ...rest } = Astro.props;
+---
+
+<span class:list={['caret', { thin }, className]} aria-hidden="true" {...rest}></span>
+
+<style lang="scss">
+  .caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-left: var(--space-0-5);
+    vertical-align: -0.15em;
+    background: currentColor;
+    animation: caret var(--duration-caret) steps(1) infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .thin {
+    width: var(--size-caret-thin);
+  }
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

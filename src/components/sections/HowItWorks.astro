@@ -1,0 +1,31 @@
+---
+import { PRODUCT_NAME } from '../../consts/product';
+import FlowDemo from '../demos/FlowDemo.astro';
+import FlowSteps from '../demos/FlowSteps.astro';
+import Section from '../Section.astro';
+
+const steps = [
+  '**The model calls a background tool**, for example `researcher`.',
+  '**The tool answers at once** with a task ID, like `sub_01a1c6da…`. The agent tells the user what it started, and the turn ends. The chat is free.',
+  '**Another PHP process does the work.** It can take seconds or half an hour.',
+  '**The result comes back into the conversation** as a message, and the agent answers it in a new turn, on its own, as soon as the conversation is free.',
+];
+---
+
+<Section id="how-it-works" heading="The idea: delegate, don't wait" bordered>
+  <Fragment slot="lead">
+    Think of how a team lead works. They don't stand at a colleague's desk until the job is done. They hand it over, go back
+    to their own work, and read the report when it lands in their inbox.
+  </Fragment>
+  <p class="t-body">{PRODUCT_NAME} gives your agent that same habit:</p>
+  <FlowSteps steps={steps} />
+  <p class="t-body">
+    It's like the buzzer a restaurant gives you when you order: you go sit with your friends, and it buzzes when your food is
+    ready. If you're in the middle of a sentence, you finish it first, then you go and pick it up.
+  </p>
+  <p class="t-body">
+    Your agents stay ordinary Neuron agents. You keep your provider, your instructions and your other tools. You add one
+    toolkit.
+  </p>
+  <FlowDemo slot="aside" />
+</Section>

@@ -1,0 +1,103 @@
+---
+import type { Snippet } from '../consts/snippets';
+import { highlight } from '../lib/highlight';
+
+interface Props {
+  title: string;
+  snippet: Snippet;
+  class?: string;
+}
+
+const { title, snippet, class: className } = Astro.props;
+const tokens = highlight(snippet.code, snippet.lang);
+---
+
+<div class:list={['code-card', className]} data-code-card>
+  <div class="head">
+    <span>{title}</span>
+    <button type="button" class="copy" data-copy>Copy</button>
+  </div>
+  <pre class="code">{tokens.map((token) => (token.kind ? <span class={token.kind}>{token.text}</span> : token.text))}</pre>
+</div>
+
+<script>
+  const COPIED_FOR_MS = 1600;
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    let reset: number | undefined;
+    button.addEventListener('click', () => {
+      const code = button.closest('[data-code-card]')?.querySelector('pre')?.textContent ?? '';
+      navigator.clipboard?.writeText(code).catch(() => {});
+      button.textContent = 'Copied';
+      window.clearTimeout(reset);
+      reset = window.setTimeout(() => (button.textContent = 'Copy'), COPIED_FOR_MS);
+    });
+  }
+</script>
+
+<style lang="scss">
+  .code-card {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-left: var(--space-4);
+    border-bottom: var(--border-width) solid var(--color-line);
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .copy {
+    min-height: var(--size-control);
+    padding-inline: var(--space-4);
+    border: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--leading-none);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease),
+      color var(--duration-fast) var(--ease);
+
+    &:hover {
+      background: var(--color-surface-sunken);
+      color: var(--color-text);
+    }
+  }
+
+  .code {
+    padding: var(--space-4);
+    overflow-x: auto;
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    white-space: pre;
+    tab-size: 4;
+  }
+
+  .keyword {
+    color: var(--color-code-keyword);
+  }
+
+  .string {
+    color: var(--color-code-string);
+  }
+
+  .comment {
+    color: var(--color-code-comment);
+  }
+</style>

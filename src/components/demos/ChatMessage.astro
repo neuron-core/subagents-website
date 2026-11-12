@@ -1,0 +1,204 @@
+---
+import type { Message } from '../../lib/demos/chat';
+import Button from '../Button.astro';
+import Caret from './Caret.astro';
+import Pill from './Pill.astro';
+
+interface Props {
+  message: Message;
+}
+
+const { message: m } = Astro.props;
+---
+
+{/* Every message carries `data-kind`, and `data-text` marks the parts src/scripts/demo.ts fills in. */}
+{
+  m.kind === 'user' && (
+    <div class="message user" data-kind="user">
+      <span data-text="text">{m.text}</span>
+    </div>
+  )
+}
+{
+  m.kind === 'agent' && (
+    <div class="message agent" data-kind="agent">
+      <span data-text="text">{m.text}</span>
+      <Caret data-if="streaming" hidden={!m.streaming} />
+    </div>
+  )
+}
+{
+  m.kind === 'call' && (
+    <div class="message call" data-kind="call">
+      <span class="tool" data-text="name">
+        {m.name}
+      </span>
+      <span data-text="args">{m.args}</span>
+    </div>
+  )
+}
+{
+  m.kind === 'ret' && (
+    <div class="message ret" data-kind="ret">
+      <span data-text="text">{m.text}</span>
+    </div>
+  )
+}
+{
+  m.kind === 'sys' && (
+    <div class="message sys" data-kind="sys">
+      <span class="sys-title" data-text="title">
+        {m.title}
+      </span>
+      <span class="sys-body" data-text="body">
+        {m.body}
+      </span>
+    </div>
+  )
+}
+{
+  m.kind === 'approval' && (
+    <div class="message approval" data-kind="approval" data-state={m.approved ? 'approved' : 'pending'}>
+      <span class="approval-text">
+        <span class="tool" data-text="name">
+          {m.name}
+        </span>
+        <span class="approval-note">needs your approval before it runs</span>
+      </span>
+      <Button variant="quiet" size="sm" class="approve" data-approve>
+        Approve
+      </Button>
+      <Pill status="done" class="approved">
+        Approved
+      </Pill>
+    </div>
+  )
+}
+
+<style lang="scss">
+  .message {
+    animation: message-in var(--duration-enter) var(--ease) both;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  .user {
+    align-self: flex-end;
+    max-width: var(--bubble-max);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-normal);
+  }
+
+  .agent,
+  .call,
+  .ret,
+  .sys-body {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-code);
+    font-variant-ligatures: none;
+  }
+
+  .agent {
+    align-self: flex-start;
+    max-width: var(--bubble-agent-max);
+    color: var(--color-text);
+    white-space: pre-line;
+  }
+
+  .call {
+    align-self: flex-start;
+    max-width: 100%;
+    padding: var(--space-1-5) var(--space-2-5);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    color: var(--color-text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .ret {
+    align-self: flex-start;
+    max-width: 100%;
+    padding-inline: var(--space-2-5);
+    color: var(--color-text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .tool {
+    color: var(--color-accent-text);
+  }
+
+  .sys {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--color-line);
+    border-radius: var(--radius-sm);
+  }
+
+  .sys-title {
+    font-size: var(--font-size-2xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .sys-body {
+    color: var(--color-text);
+    white-space: pre-line;
+  }
+
+  .approval {
+    align-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2-5) var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  .approval-text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--space-0-5);
+
+    .tool {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-xs);
+      line-height: var(--leading-code);
+    }
+  }
+
+  .approval-note {
+    font-size: var(--font-size-xs);
+    line-height: var(--leading-compact);
+    color: var(--color-text-muted);
+  }
+
+  .approval[data-state='approved'] .approve,
+  .approval[data-state='pending'] .approved {
+    display: none;
+  }
+
+  @keyframes message-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--space-1-5));
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

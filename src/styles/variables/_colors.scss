@@ -1,0 +1,42 @@
+:root {
+  --color-ground: #f3f3f3;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #f8f9fa;
+  --color-text: #212529;
+  --color-text-muted: #5a6068;
+  --color-line: #dcddde;
+  --color-line-strong: #83898f;
+  --color-segment: #c4c8cd;
+  --color-orange: #ff800c;
+  --color-orange-hover: #f07400;
+  --color-on-orange: #212529;
+  --color-accent-text: #ad5000;
+  --color-accent-wash: #fff9f4;
+  --color-focus: #212529;
+  --color-ok: #198754;
+  --color-fail: #dc3545;
+  --color-warn: #ffc107;
+  --color-on-status: #ffffff;
+  --color-on-warn: #212529;
+  --color-code-keyword: #0000ff;
+  --color-code-string: #a31515;
+  --color-code-comment: #008000;
+}
+
+// The dark "ink" theme, applied to the header, the demo panels and the closing call to action.
+[data-theme='ink'] {
+  --color-ground: #212529;
+  --color-surface: #2b3036;
+  --color-surface-sunken: #1b1e21;
+  --color-text: #ffffff;
+  --color-text-muted: #9ba2ab;
+  --color-line: #3a4047;
+  --color-line-strong: #7e858d;
+  --color-segment: #5b626a;
+  --color-accent-text: #ff800c;
+  --color-accent-wash: #3a2d22;
+  --color-focus: #ff800c;
+  --color-code-keyword: #569cd6;
+  --color-code-string: #ce9178;
+  --color-code-comment: #6a9955;
+}

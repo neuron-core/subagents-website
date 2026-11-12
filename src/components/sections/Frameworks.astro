@@ -1,0 +1,75 @@
+---
+import { FRAMEWORK_NAMES, FRAMEWORKS, PRODUCT_NAME } from '../../consts/product';
+import { LINKS } from '../../consts/site';
+import { SNIPPETS } from '../../consts/snippets';
+import { listOf } from '../../lib/format';
+import Actions from '../Actions.astro';
+import Button from '../Button.astro';
+import CodeCard from '../CodeCard.astro';
+import Grid from '../Grid.astro';
+import RuleList from '../RuleList.astro';
+import Section from '../Section.astro';
+import Stack from '../Stack.astro';
+
+const { laravel, symfony } = FRAMEWORKS;
+---
+
+<Section id="frameworks" heading={`Ready for ${listOf(FRAMEWORK_NAMES)}`}>
+  <Fragment slot="lead">
+    Dedicated integration packages wire everything into your framework: no bootstrap file, no process runner to configure, no
+    crontab line to remember. They build on {PRODUCT_NAME}, so your project needs a license for it, and they install the same
+    way once it has access.
+  </Fragment>
+  <Grid columns={2}>
+    <Stack>
+      <h3 class="t-title">{laravel.name}</h3>
+      <CodeCard title="Terminal" snippet={SNIPPETS.laravelInstall} />
+      <RuleList>
+        <li>
+          <strong>Installs itself.</strong> The service provider is discovered automatically and there is nothing to migrate.
+        </li>
+        <li>
+          <strong>Runs on your {laravel.name} queue.</strong> Every task and every delivery is a queued job, on the connection and
+          queue you choose. Give a single tool a queue of its own, for example a dedicated <code class="ic">research</code> queue
+          for long sub-agents.
+        </li>
+        <li>
+          <strong>Uses the stores you already have.</strong> Background work is kept in the workflow persistence your agents already
+          use, taken from the container.
+        </li>
+        <li>
+          <strong>Sweeps on its own.</strong> The sweep is added to your schedule, every minute, on one server, without overlapping.
+        </li>
+        <li>
+          <strong>Tells you when it needs help.</strong> Set an email address and you're notified when a sweep fails, or takes longer
+          than its minute because you've outgrown a single sweeper.
+        </li>
+        <li>
+          <strong>Built for your tests.</strong> Swap in <code class="ic">FakeRunner</code>, or use
+          <code class="ic">Queue::fake()</code> as with any other job.
+        </li>
+      </RuleList>
+      <CodeCard title="PHP" snippet={SNIPPETS.laravelServe} />
+    </Stack>
+    <Stack>
+      <h3 class="t-title">{symfony.name}</h3>
+      <CodeCard title="Terminal" snippet={SNIPPETS.symfonyInstall} />
+      <RuleList>
+        <li>
+          <strong>A bundle that registers everything</strong> in the service container, so your agents receive the
+          <code class="ic">Background</code> by autowiring.
+        </li>
+        <li>
+          <strong>Runs on your application's own queue and scheduler</strong>, in the processes {symfony.name} already runs, instead
+          of a separate runner and crontab.
+        </li>
+        <li>
+          <strong>Uses the stores your agents already share</strong>, so there's nothing new to set up in your database.
+        </li>
+      </RuleList>
+    </Stack>
+  </Grid>
+  <Actions>
+    <Button href={LINKS.contact}>Talk to us</Button>
+  </Actions>
+</Section>
