@@ -1,6 +1,5 @@
 ---
-import { PRODUCT } from '../consts/product';
-import { SITE_BRAND } from '../consts/site';
+import { BRAND, PRODUCT } from '../consts/product';
 
 interface Props {
   size?: 'sm' | 'md';
@@ -8,28 +7,16 @@ interface Props {
 }
 
 const { size = 'md', class: className } = Astro.props;
-
-// The Neuron IQ pixel mark, as in src/assets/neuron-iq-logo*.svg: a 6 × 6 grid of squares crossed by a diagonal,
-// with a shadow below it and an accent square in the top right corner. It's drawn here so its colors come from
-// the theme it sits on.
-const SIDE = 6;
-const SQUARE = 45;
-const STEP = 51;
-const squares = Array.from({ length: SIDE * SIDE }, (_, i) => {
-  const column = i % SIDE;
-  const row = Math.floor(i / SIDE);
-  const diagonal = column + row;
-  const kind = diagonal === SIDE - 1 ? (row === 0 ? 'accent' : 'ink') : diagonal === SIDE ? 'shadow' : 'grid';
-  return { x: column * STEP, y: row * STEP, kind };
-});
 ---
 
 <span class:list={['logo', size, className]}>
-  <svg class="mark" viewBox={`0 0 ${STEP * (SIDE - 1) + SQUARE} ${STEP * (SIDE - 1) + SQUARE}`} shape-rendering="crispEdges" aria-hidden="true">
-    {squares.map((square) => <rect class={square.kind} x={square.x} y={square.y} width={SQUARE} height={SQUARE} />)}
+  {/* Two squares on a 10-unit grid, touching at a corner: the agent, and a sub-agent stepping off it to run on its own. */}
+  <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+    <rect class="agent" x="0" y="10" width="10" height="10"></rect>
+    <rect class="subagent" x="10" y="0" width="10" height="10"></rect>
   </svg>
   <span class="words">
-    <span class="brand">{SITE_BRAND}</span>
+    <span class="brand">{BRAND}</span>
     <span class="product">{PRODUCT}</span>
   </span>
 </span>
@@ -44,24 +31,16 @@ const squares = Array.from({ length: SIDE * SIDE }, (_, i) => {
   .mark {
     display: block;
     flex: none;
-    width: var(--size-mark);
+    width: auto;
     height: var(--size-mark);
   }
 
-  .grid {
-    fill: var(--color-surface-sunken);
+  .agent {
+    fill: var(--color-logo);
   }
 
-  .shadow {
-    fill: var(--color-surface);
-  }
-
-  .ink {
-    fill: var(--color-text);
-  }
-
-  .accent {
-    fill: var(--color-brand);
+  .subagent {
+    fill: var(--color-orange);
   }
 
   .words {
@@ -85,7 +64,6 @@ const squares = Array.from({ length: SIDE * SIDE }, (_, i) => {
     gap: var(--space-2-5);
 
     .mark {
-      width: var(--size-mark-sm);
       height: var(--size-mark-sm);
     }
 

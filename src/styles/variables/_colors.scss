@@ -21,8 +21,8 @@
   --color-code-keyword: #0000ff;
   --color-code-string: #a31515;
   --color-code-comment: #008000;
-  /* The Neuron IQ green, from the logo. The same in both themes. */
-  --color-brand: #00a651;
+  // The agent square of the logo; its sub-agent square is always --color-orange.
+  --color-logo: #83898f;
 }
 
 // The dark "ink" theme, applied to the header, the demo panels and the closing call to action.
@@ -43,4 +43,5 @@
   --color-code-keyword: #569cd6;
   --color-code-string: #ce9178;
   --color-code-comment: #6a9955;
+  --color-logo: #fafaf9;
 }

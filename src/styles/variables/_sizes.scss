@@ -10,8 +10,9 @@
   --size-panel-head: 58px;
   --size-icon: 16px;
   --size-icon-sm: 14px;
-  --size-mark: 24px;
-  --size-mark-sm: 21px;
+  // Height of the logo mark, 0.8 of its wordmark as on iq-server-website; the width follows.
+  --size-mark: 14px;
+  --size-mark-sm: 12px;
   --size-dot: 8px;
   --size-dot-sm: 6px;
   --size-spinner: 12px;
