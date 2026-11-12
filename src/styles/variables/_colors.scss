@@ -26,17 +26,19 @@
 }
 
 // The dark "ink" theme, applied to the header, the demo panels and the closing call to action.
+// Its tone is the one of the Neuron IQ websites: a neutral #111111, with text and lines as paper (#fafaf9)
+// at a set opacity, flattened here over the ink so surfaces can sit on each other.
 [data-theme='ink'] {
-  --color-ground: #212529;
-  --color-surface: #2b3036;
-  --color-surface-sunken: #1b1e21;
-  --color-text: #ffffff;
-  --color-text-muted: #9ba2ab;
-  --color-line: #3a4047;
-  --color-line-strong: #7e858d;
-  --color-segment: #5b626a;
+  --color-ground: #111111;
+  --color-surface: #262626;
+  --color-surface-sunken: #1c1c1c;
+  --color-text: #fafaf9;
+  --color-text-muted: #a1a1a1;
+  --color-line: #323231;
+  --color-line-strong: #525252;
+  --color-segment: #5c5c5a;
   --color-accent-text: #ff800c;
-  --color-accent-wash: #3a2d22;
+  --color-accent-wash: #301f10;
   --color-focus: #ff800c;
   --color-code-keyword: #569cd6;
   --color-code-string: #ce9178;

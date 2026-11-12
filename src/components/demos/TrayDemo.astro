@@ -188,6 +188,7 @@ const state = trayState(trayScript.length - 1, TRAY_DEFAULT_TASK);
   .task-tool {
     flex: none;
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
     font-size: var(--font-size-xs);
     line-height: var(--leading-compact);
     color: var(--color-accent-text);
@@ -208,6 +209,7 @@ const state = trayState(trayScript.length - 1, TRAY_DEFAULT_TASK);
     flex: none;
     width: var(--size-elapsed);
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
     font-size: var(--font-size-xs);
     line-height: var(--leading-compact);
     color: var(--color-text-muted);
@@ -240,6 +242,7 @@ const state = trayState(trayScript.length - 1, TRAY_DEFAULT_TASK);
     grid-template-columns: minmax(0, var(--prop-key-width)) minmax(0, 1fr);
     gap: var(--space-3);
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
     font-size: var(--font-size-xs);
     line-height: var(--leading-code);
   }
