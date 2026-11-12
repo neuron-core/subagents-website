@@ -12,7 +12,7 @@ import NavLink from './NavLink.astro';
     <nav class="nav" aria-label="Sections">
       {NAV.map((item) => <NavLink href={item.href}>{item.label}</NavLink>)}
     </nav>
-    <Button href={LINKS.contact}>Talk to us</Button>
+    <Button href={LINKS.contact} target="_blank" rel="noopener">Talk to us</Button>
   </Container>
 </header>
 

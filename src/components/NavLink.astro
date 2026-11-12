@@ -1,12 +1,14 @@
 ---
-interface Props {
-  href: string;
-}
+import type { HTMLAttributes } from 'astro/types';
 
-const { href } = Astro.props;
+type Props = HTMLAttributes<'a'> & {
+  href: string;
+};
+
+const { href, class: className, ...rest } = Astro.props;
 ---
 
-<a class="nav-link" href={href}><slot /></a>
+<a class:list={['nav-link', className]} href={href} {...rest}><slot /></a>
 
 <style lang="scss">
   .nav-link {
