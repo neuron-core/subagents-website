@@ -1,6 +1,9 @@
+/** The open-source framework the product extends. */
 export const BRAND = 'Neuron AI';
+/** The brand of the product name, in the site title, the logo and the copy. */
+export const TITLE_BRAND = 'Neuron IQ';
 export const PRODUCT = 'Subagents';
-export const PRODUCT_NAME = `Neuron ${PRODUCT}`;
+export const PRODUCT_NAME = `${TITLE_BRAND} ${PRODUCT}`;
 
 export const PACKAGE = 'neuron-core/subagents';
 export const PHP_MIN_VERSION = '8.1';

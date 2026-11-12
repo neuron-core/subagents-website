@@ -1,5 +1,5 @@
 ---
-import { BRAND, PRODUCT } from '../consts/product';
+import { PRODUCT, TITLE_BRAND } from '../consts/product';
 
 interface Props {
   size?: 'sm' | 'md';
@@ -16,7 +16,7 @@ const { size = 'md', class: className } = Astro.props;
     <rect class="subagent" x="10" y="0" width="10" height="10"></rect>
   </svg>
   <span class="words">
-    <span class="brand">{BRAND}</span>
+    <span class="brand">{TITLE_BRAND}</span>
     <span class="product">{PRODUCT}</span>
   </span>
 </span>

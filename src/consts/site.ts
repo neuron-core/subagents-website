@@ -1,8 +1,8 @@
-import { BRAND, PRODUCT } from './product';
+import { BRAND, PRODUCT_NAME } from './product';
 
 export const SITE = {
-  /** The name in the page title and the logo: an extension of the Neuron AI framework. */
-  title: `${BRAND} ${PRODUCT}`,
+  /** The name in the page title and the logo. */
+  title: PRODUCT_NAME,
   description: `Give any ${BRAND} agent background tools and sub-agents. It hands slow work to other processes, runs it side by side, and keeps talking with your user.`,
 };
 
