@@ -33,7 +33,7 @@ const closing = variant === 'closing';
       ) : (
         <Split centered>
           <div class="intro">
-            <h1 class="t-display">{heading}</h1>
+            <h1 class="t-display title">{heading}</h1>
             <p class="t-lead measure muted">
               <slot name="lead" />
             </p>
@@ -52,8 +52,20 @@ const closing = variant === 'closing';
 </section>
 
 <style lang="scss">
+  @use 'variables/breakpoints' as *;
+
   .page-hero {
     padding-block: var(--section-padding);
+  }
+
+  // The opening title is short, so it runs larger than the display scale. The sizes follow the
+  // viewport so the title keeps the same number of lines as the column narrows.
+  .title {
+    font-size: clamp(var(--font-size-5xl), 11vw, 3rem);
+
+    @include lg {
+      font-size: clamp(4rem, 5.6vw, 4.5rem);
+    }
   }
 
   .intro {
