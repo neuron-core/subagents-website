@@ -10,7 +10,17 @@ import NavLink from './NavLink.astro';
   <Container class="bar">
     <a class="home" href="#top" aria-label={`${SITE.title}, back to the top`}><Logo /></a>
     <nav class="nav" aria-label="Sections">
-      {NAV.map((item) => <NavLink href={item.href}>{item.label}</NavLink>)}
+      {
+        NAV.map((item) =>
+          item.external ? (
+            <NavLink href={item.href} target="_blank" rel="noopener">
+              {item.label}
+            </NavLink>
+          ) : (
+            <NavLink href={item.href}>{item.label}</NavLink>
+          ),
+        )
+      }
     </nav>
     <Button href={LINKS.contact} target="_blank" rel="noopener">Talk to us</Button>
   </Container>

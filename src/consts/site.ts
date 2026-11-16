@@ -10,11 +10,15 @@ export const LINKS = {
   contact: 'https://form.typeform.com/to/Ba6XOU1t',
   neuronGithub: 'https://github.com/neuron-core/neuron-ai',
   neuronDocs: 'https://docs.neuron-ai.dev',
+  neuronIq: 'https://neuron-iq.dev',
 };
 
-export const NAV = [
+type NavItem = { label: string; href: string; external?: boolean };
+
+export const NAV: NavItem[] = [
   { label: 'How it works', href: '#how-it-works' },
   { label: 'Features', href: '#features' },
   { label: 'Production', href: '#production' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Neuron IQ', href: LINKS.neuronIq, external: true },
 ];
